@@ -4,7 +4,11 @@
   "description": "## 📋 Sobre",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:build": "docker compose build",
+    "docker:rebuild": "docker compose down && docker compose build && docker compose up -d"
   },
   "keywords": [],
   "author": "",

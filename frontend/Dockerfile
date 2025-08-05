@@ -11,8 +11,8 @@ RUN npm install
 COPY . .
 
 # Expõe a porta padrão do Vite
-EXPOSE 3000
+EXPOSE 5173
 
-# Comando padrão: inicia o servidor de desenvolvimento do Vite com hot reload
-CMD [ "npm", "run", "dev", "--", "--host", "0.0.0.0" ]
+# Comando padrão: inicia o servidor de desenvolvimento do Vite
+CMD [ "npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173" ]
 
