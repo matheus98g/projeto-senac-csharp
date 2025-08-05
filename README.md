@@ -1,4 +1,4 @@
-# 🚀 Projeto Fullstack
+# 🚀 Projeto Fullstack com C#/React/Postgresql
 
 ## 📋 Sobre
 
