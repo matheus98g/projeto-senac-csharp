@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docker:up": "docker compose up -d",
-    "docker:down": "docker compose down",
-    "docker:build": "docker compose build",
-    "docker:rebuild": "docker compose down && docker compose build && docker compose up -d"
+    "docker:up": "docker compose -f docker-compose.dev.yml up",
+    "docker:down": "docker compose -f docker-compose.dev.yml down",
+    "docker:build": "docker compose -f docker-compose.dev.yml build",
+    "docker:rebuild": "docker compose -f docker-compose.dev.yml down && docker compose -f docker-compose.dev.yml build && docker compose -f docker-compose.dev.yml up -d"
   },
   "keywords": [],
   "author": "",
