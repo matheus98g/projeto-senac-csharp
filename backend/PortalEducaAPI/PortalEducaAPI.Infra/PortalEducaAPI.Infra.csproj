@@ -1,18 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <Folder Include="DatabaseConfiguration\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PortalEducaAPI.Domain\PortalEducaAPI.Domain.csproj" />
-    <ProjectReference Include="..\PortalEducaAPI.Infra\PortalEducaAPI.Infra.csproj" />
   </ItemGroup>
 
 </Project>

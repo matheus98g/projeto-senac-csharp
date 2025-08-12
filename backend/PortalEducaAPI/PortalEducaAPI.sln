@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortalEducaAPI", "PortalEducaAPI\PortalEducaAPI.csproj", "{549663C8-CB16-471E-A567-E35FDB7E93D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortalEducaAPI.Domain", "PortalEducaAPI.Domain\PortalEducaAPI.Domain.csproj", "{69DE543A-0F44-4FFA-9719-0DC638F4AC28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortalEducaAPI.Infra", "PortalEducaAPI.Infra\PortalEducaAPI.Infra.csproj", "{80ED47C8-E1FF-44DB-913A-A65153A4D64A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{549663C8-CB16-471E-A567-E35FDB7E93D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{549663C8-CB16-471E-A567-E35FDB7E93D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{549663C8-CB16-471E-A567-E35FDB7E93D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69DE543A-0F44-4FFA-9719-0DC638F4AC28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69DE543A-0F44-4FFA-9719-0DC638F4AC28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69DE543A-0F44-4FFA-9719-0DC638F4AC28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69DE543A-0F44-4FFA-9719-0DC638F4AC28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80ED47C8-E1FF-44DB-913A-A65153A4D64A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80ED47C8-E1FF-44DB-913A-A65153A4D64A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80ED47C8-E1FF-44DB-913A-A65153A4D64A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80ED47C8-E1FF-44DB-913A-A65153A4D64A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
