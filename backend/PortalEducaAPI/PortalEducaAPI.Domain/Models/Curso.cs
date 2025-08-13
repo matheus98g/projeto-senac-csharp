@@ -15,7 +15,7 @@ namespace PortalEducaAPI.Domain.Models
 
         public decimal Valor { get; set; }
         public DateTime? DataCriacao { get; set; }
-        public DateTime? ProfessorId { get; set; }
+        public long? ProfessorId { get; set; }
 
         public int CargaHoraria { get; set; }
         public CategoriaCurso CategoriaCurso { get; set; }

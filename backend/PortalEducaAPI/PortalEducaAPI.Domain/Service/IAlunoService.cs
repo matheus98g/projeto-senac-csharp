@@ -8,13 +8,18 @@ using PortalEducaAPI.Domain.Dtos.Response;
 
 namespace PortalEducaAPI.Domain.Service
 {
-    public interface IAlunoService
+   
+
+    namespace PortalEducaAPI.Domain.Service
     {
-        Task<ObterDetalhadoPorIdResponse> ObterDetalhadoPorId(long id);
-        Task<CadastrarResponse> Cadastrar(CadastrarRequest cadastrarRequest);
-        Task DeletarPorId(long id);
-        Task AtualizarPorId(long id, AtualizarRequest atualizarRequest);
- 
-        Task<IEnumerable<ObterTodosResponse>> ObterTodos();
+        public interface IAlunoService
+        {
+            Task<CadastrarResponse> Cadastrar(CadastrarRequest request);
+            Task AtualizarPorId(long id, AtualizarRequest request);
+            Task DeletarPorId(long id);
+            Task<IEnumerable<ObterTodosResponse>> ObterTodos();
+            Task<ObterDetalhadoPorIdResponse> ObterDetalhadoPorId(long id);
+        }
     }
+
 }
