@@ -9,6 +9,6 @@ namespace PortalEducaAPI.Domain.Dtos.Response
     public class ObterTodosResponse
     {
         public long Id { get; set; }
-        public string Titulo { get; set; }
+        public string Nome { get; set; }
     }
 }

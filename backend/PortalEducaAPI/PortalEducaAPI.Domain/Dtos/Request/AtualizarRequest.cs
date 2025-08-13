@@ -8,8 +8,8 @@ namespace PortalEducaAPI.Domain.Dtos.Request
 {
     public class AtualizarRequest
     {
-        public string Titulo { get; set; }
-        public string Descricao { get; set; }
-        public string Categoria { get; set; }
+        public string Email { get; set; }
+        public string Telefone { get; set; }
+        public bool Ativo { get; set; }
     }
 }

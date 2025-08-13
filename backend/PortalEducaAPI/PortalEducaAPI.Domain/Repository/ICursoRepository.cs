@@ -7,13 +7,12 @@ using PortalEducaAPI.Domain.Models;
 
 namespace PortalEducaAPI.Domain.Repository
 {
-    public interface IAlunoRepository
+    public interface ICursoRepository
     {
-
-        Task<long> Cadastrar(Aluno aluno);
-        Task AtualizarPorId(Aluno aluno);
+        Task<long> Cadastrar(Curso curso);
+        Task AtualizarPorId(Curso curso);
         Task DeletarPorId(long id);
-        Task<Aluno> ObterDetalhadoPorId(long id);
-        Task<IEnumerable<Aluno>> ObterTodos();
+        Task<Curso> ObterDetalhadoPorId(long id);
+        Task<IEnumerable<Curso>> ObterTodos();
     }
 }

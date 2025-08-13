@@ -14,7 +14,7 @@ namespace PortalEducaAPI.Domain.Models
         public string Telefone { get; set; }
 
         public string Email { get; set; }
-        public DateTime? DataNasc { get; set; }
+        public DateTime? DataNascimento { get; set; }
         public DateTime? Matricula { get; set; }
 
         public bool Ativo { get; set; }

@@ -9,13 +9,15 @@ namespace PortalEducaAPI.Domain.Dtos.Response
     public class ObterDetalhadoPorIdResponse
     {
         public long Id { get; set; }
-        public string Titulo { get; set; }
-        public string Descricao { get; set; }
-        public bool Disponivel { get; set; }
-        public string Categoria { get; set; }
-        public string Responsavel { get; set; }
-        public DateTime? DataEntrega { get; set; }
+        public string Nome { get; set; }
+        public string Sobrenome { get; set; }
+        public bool Ativo { get; set; }
+        public string Email { get; set; }
+        public string Telefone { get; set; }
+        public DateTime? DataNascimento { get; set; }
 
-        public bool IsEmAtraso { get; set; }
+        public DateTime? Matricula { get; set; }
+
+    
     }
 }
