@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PortalEducaAPI.Domain.Dtos;
+using PortalEducaAPI.Domain.Dtos.Request.Aluno;
+using PortalEducaAPI.Domain.Service.PortalEducaAPI.Domain.Service;
 
 namespace PortalEducaAPI.Controllers
 {

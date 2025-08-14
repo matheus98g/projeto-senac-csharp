@@ -1,5 +1,5 @@
-﻿using PortalEducaAPI.Domain.Dtos.Request;
-using PortalEducaAPI.Domain.Dtos.Response;
+﻿using PortalEducaAPI.Domain.Dtos.Request.Aluno;
+using PortalEducaAPI.Domain.Dtos.Response.Aluno;
 using PortalEducaAPI.Domain.Models;
 using PortalEducaAPI.Domain.Repository;
 using PortalEducaAPI.Domain.Service.PortalEducaAPI.Domain.Service;
@@ -19,6 +19,7 @@ namespace PortalEducaAPI.Domain.Service
         {
             var aluno = new Aluno
             {
+                Id = request.Id,
                 Nome = request.Nome,
                 Sobrenome = request.Sobrenome,
                 Email = request.Email,

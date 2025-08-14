@@ -4,16 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PortalEducaAPI.Domain.Dtos.Request
+namespace PortalEducaAPI.Domain.Dtos.Request.Curso
 {
-    public class CadastrarCursoRequest
+    public class AtualizarCursoRequest
     {
-
-        public string Nome { get; set; }
-
-        public string  Descricao { get; set; }
-
-        public  DateTime DataCriacao { get; set; }
+        public string Descricao { get; set; }
 
         public string Categoria { get; set; }
 
@@ -21,10 +16,8 @@ namespace PortalEducaAPI.Domain.Dtos.Request
 
         public int CargaHoraria { get; set; }
 
-        public  bool Ativo { get; set; }
+        public bool Ativo { get; set; }
 
+        public long ProfessorId { get; set; }
     }
 }
-
-
- 

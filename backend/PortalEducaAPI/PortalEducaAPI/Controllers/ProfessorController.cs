@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using PortalEducaAPI.Domain.Dtos;
+using PortalEducaAPI.Domain.Dtos.Request.Curso;
+using PortalEducaAPI.Domain.Dtos.Request.Professor;
+using PortalEducaAPI.Domain.Service;
 
 namespace PortalEducaAPI.Controllers
 {
@@ -45,7 +49,7 @@ namespace PortalEducaAPI.Controllers
             }
 
             [HttpPost]
-            public async Task<IActionResult> Cadastrar([FromBody] CursoCadastrarRequest cadastrarRequest)
+            public async Task<IActionResult> Cadastrar([FromBody] CadastrarProfessorRequest cadastrarRequest)
             {
                 try
                 {
@@ -84,7 +88,7 @@ namespace PortalEducaAPI.Controllers
                 }
             }
             [HttpPut("{id}")]
-            public async Task<IActionResult> EditarPorID([FromRoute] long id, [FromBody] ProfessorAtualizarRequest adicionarRequest)
+            public async Task<IActionResult> EditarPorID([FromRoute] long id, [FromBody] AtualizarProfessorRequest adicionarRequest)
             {
                 try
                 {

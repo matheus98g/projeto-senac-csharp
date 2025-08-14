@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PortalEducaAPI.Domain.Dtos.Response
+namespace PortalEducaAPI.Domain.Dtos.Response.Professor
 {
-    public class CadastrarResponse
+    public class CadastrarProfessorResponse
     {
         public long Id { get; set; }
-
     }
 }

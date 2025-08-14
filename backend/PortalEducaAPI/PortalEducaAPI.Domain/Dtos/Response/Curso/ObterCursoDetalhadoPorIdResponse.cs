@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PortalEducaAPI.Domain.Models;
 
-namespace PortalEducaAPI.Domain.Models
+namespace PortalEducaAPI.Domain.Dtos.Response.Curso
 {
-    public class Curso
+    public class ObterCursoDetalhadoPorIdResponse
     {
         public long Id { get; set; }
         public string Nome { get; set; }
@@ -18,7 +19,7 @@ namespace PortalEducaAPI.Domain.Models
         public long? ProfessorId { get; set; }
 
         public int CargaHoraria { get; set; }
-        public CategoriaCurso Categoria { get; set; }
+        public string Categoria { get; set; }
 
         public bool Ativo { get; set; }
     }

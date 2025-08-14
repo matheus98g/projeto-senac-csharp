@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dapper;
 using PortalEducaAPI.Domain.Models;
 using PortalEducaAPI.Domain.Repository;
+using PortalEducaAPI.Infra.DatabaseConfiguration;
 
 namespace PortalEducaAPI.Infra
 {
@@ -12,12 +14,12 @@ namespace PortalEducaAPI.Infra
     {
         private readonly IDbConnectionFactory _connectionFactory;
 
-        public JogoRepository(IDbConnectionFactory connectionFactory)
+        public ProfessorRepository(IDbConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory;
         }
 
-        public async Task AtualizarPorId(Aluno aluno)
+        public async Task AtualizarPorId(Professor professor)
         {
             var sql = @"
                 UPDATE Professor
@@ -33,10 +35,10 @@ namespace PortalEducaAPI.Infra
             ";
 
             var connection = _connectionFactory.CreateConnection();
-            await connection.QueryFirstOrDefaultAsync(sql, aluno);
+            await connection.QueryFirstOrDefaultAsync(sql, professor);
         }
 
-        public async Task<long> Cadastrar(Aluno aluno)
+        public async Task<long> Cadastrar(Professor professor)
         {
             var sql = @"
                 INSERT INTO Professor
@@ -47,7 +49,7 @@ namespace PortalEducaAPI.Infra
             ";
 
             var connection = _connectionFactory.CreateConnection();
-            return await connection.QueryFirstOrDefaultAsync<long>(sql, jogo);
+            return await connection.QueryFirstOrDefaultAsync<long>(sql, professor);
         }
 
         public async Task DeletarPorId(long id)
@@ -58,7 +60,7 @@ namespace PortalEducaAPI.Infra
             await connection.QueryFirstOrDefaultAsync(sql, new { Id = id });
         }
 
-        public async Task DevolverJogo(Aluno aluno)
+        public async Task DevolverJogo(Professor professor)
         {
             var sql = @"
             UPDATE Jogos
@@ -71,10 +73,10 @@ namespace PortalEducaAPI.Infra
         ";
 
             var connection = _connectionFactory.CreateConnection();
-            await connection.QueryFirstOrDefaultAsync(sql, aluno);
+            await connection.QueryFirstOrDefaultAsync(sql, professor);
         }
 
-        public async Task<Aluno> ObterDetalhadoPorId(long id)
+        public async Task<Professor> ObterDetalhadoPorId(long id)
         {
             var sql = @"
                 SELECT Id, Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataContratacao, FormacaoId, Ativo
@@ -83,10 +85,10 @@ namespace PortalEducaAPI.Infra
             ";
 
             var connection = _connectionFactory.CreateConnection();
-            return await connection.QueryFirstOrDefaultAsync<Aluno>(sql, new { Id = id });
+            return await connection.QueryFirstOrDefaultAsync<Professor>(sql, new { Id = id });
         }
 
-        public async Task<IEnumerable<Aluno>> ObterTodos()
+        public async Task<IEnumerable<Professor>> ObterTodos()
         {
             var sql = @"
                 SELECT Id, Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataContratacao, FormacaoId, Ativo
@@ -94,7 +96,7 @@ namespace PortalEducaAPI.Infra
             ";
 
             var connection = _connectionFactory.CreateConnection();
-            return await connection.QueryAsync<Aluno>(sql);
+            return await connection.QueryAsync<Professor>(sql);
         }
     }
 

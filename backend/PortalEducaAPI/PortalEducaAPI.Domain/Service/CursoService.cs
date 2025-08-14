@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PortalEducaAPI.Domain.Dtos.Request;
-using PortalEducaAPI.Domain.Dtos.Response;
+using PortalEducaAPI.Domain.Dtos.Request.Aluno;
+using PortalEducaAPI.Domain.Dtos.Request.Curso;
+using PortalEducaAPI.Domain.Dtos.Response.Aluno;
+using PortalEducaAPI.Domain.Dtos.Response.Curso;
 using PortalEducaAPI.Domain.Models;
 using PortalEducaAPI.Domain.Repository;
 
@@ -18,7 +20,7 @@ namespace PortalEducaAPI.Domain.Service
             _cursoRepository = cursoRepository;
         }
 
-        public async Task<CadastrarResponse> Cadastrar(CadastrarCursoRequest cadastrarCursoRequest)
+        public async Task<CadastrarCursoResponse> Cadastrar(CadastrarCursoRequest cadastrarCursoRequest)
         {
             bool categoriaValida = Enum.TryParse(cadastrarCursoRequest.Categoria, ignoreCase: true, out CategoriaCurso categoria);
 
@@ -31,9 +33,8 @@ namespace PortalEducaAPI.Domain.Service
             {
                 Nome = cadastrarCursoRequest.Nome,
                 Descricao = cadastrarCursoRequest.Descricao,
-                Telefone = cadastrarCursoRequest.Telefone,
+                CargaHoraria = cadastrarCursoRequest.CargaHoraria,
                 Valor = cadastrarCursoRequest.Valor,
-                DataEntrega = cadastrarCursoRequest.DataEntrega,
                 Categoria = categoria,
                 Ativo = true,
                 DataCriacao = DateTime.Now
@@ -41,19 +42,19 @@ namespace PortalEducaAPI.Domain.Service
 
             long idResponse = await _cursoRepository.Cadastrar(curso);
 
-            return new CadastrarResponse
+            return new CadastrarCursoResponse
             {
                 Id = idResponse,
             };
         }
 
-        public async Task AtualizarPorId(long id, AtualizarRequest atualizarRequest)
+        public async Task AtualizarPorId(long id, AtualizarCursoRequest atualizarCursoRequest)
         {
             var categoriasValidas = Enum.GetNames(typeof(CategoriaCurso));
 
-            if (!categoriasValidas.Contains(atualizarRequest.Categoria, StringComparer.OrdinalIgnoreCase))
+            if (!categoriasValidas.Contains(atualizarCursoRequest.Categoria, StringComparer.OrdinalIgnoreCase))
             {
-                throw new Exception($"A categoria '{atualizarRequest.Categoria}' é inválida.");
+                throw new Exception($"A categoria '{atualizarCursoRequest.Categoria}' é inválida.");
             }
 
             var curso = await _cursoRepository.ObterDetalhadoPorId(id);
@@ -63,9 +64,12 @@ namespace PortalEducaAPI.Domain.Service
                 throw new Exception($"Não foi possível encontrar o curso com ID {id}.");
             }
 
-            curso.Nome = atualizarRequest.Nome;
-            curso.Descricao = atualizarRequest.Descricao;
-            curso.Categoria = Enum.Parse<CategoriaCurso>(atualizarRequest.Categoria, ignoreCase: true);
+            curso.Valor = atualizarCursoRequest.Valor;
+            curso.CargaHoraria = atualizarCursoRequest.CargaHoraria;
+            curso.Ativo = atualizarCursoRequest.Ativo;
+            curso.ProfessorId = atualizarCursoRequest.ProfessorId;
+            curso.Descricao = atualizarCursoRequest.Descricao;
+            curso.Categoria = Enum.Parse<CategoriaCurso>(atualizarCursoRequest.Categoria, ignoreCase: true);
 
             await _cursoRepository.AtualizarPorId(curso);
         }
@@ -82,11 +86,11 @@ namespace PortalEducaAPI.Domain.Service
             await _cursoRepository.DeletarPorId(id);
         }
 
-        public async Task<IEnumerable<ObterTodosResponse>> ObterTodos()
+        public async Task<IEnumerable<ObterTodosCursoResponse>> ObterTodos()
         {
             var cursos = await _cursoRepository.ObterTodos();
 
-            var response = cursos.Select(curso => new ObterTodosResponse
+            var response = cursos.Select(curso => new ObterTodosCursoResponse
             {
                 Nome = curso.Nome,
                 Id = curso.Id
@@ -95,14 +99,14 @@ namespace PortalEducaAPI.Domain.Service
             return response;
         }
 
-        public async Task<ObterDetalhadoPorIdResponse> ObterDetalhadoPorId(long id)
+        public async Task<ObterCursoDetalhadoPorIdResponse> ObterDetalhadoPorId(long id)
         {
             var curso = await _cursoRepository.ObterDetalhadoPorId(id);
 
             if (curso == null)
                 throw new KeyNotFoundException($"Curso com ID {id} não encontrado.");
 
-            return new ObterDetalhadoPorIdResponse
+            return new ObterCursoDetalhadoPorIdResponse
             {
                 Id = curso.Id,
                 Nome = curso.Nome,
@@ -110,7 +114,9 @@ namespace PortalEducaAPI.Domain.Service
                 Telefone = curso.Telefone,
                 Valor = curso.Valor,
                 Categoria = curso.Categoria.ToString(),
-                DataEntrega = curso.DataEntrega,
+                DataCriacao = curso.DataCriacao,
+                CargaHoraria = curso.CargaHoraria,
+                ProfessorId = curso.ProfessorId,
                 Ativo = curso.Ativo
             };
         }

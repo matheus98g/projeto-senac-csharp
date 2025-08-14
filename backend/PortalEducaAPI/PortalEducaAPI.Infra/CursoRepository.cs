@@ -89,7 +89,7 @@ namespace PortalEducaAPI.Infra
             return await connection.QueryFirstOrDefaultAsync<Curso>(sql, new { Id = id });
         }
 
-        public async Task<IEnumerable<Curso>> ICursoRepository.ObterTodos()
+        public async Task<IEnumerable<Curso>> ObterTodos()
         {
             var sql = @"
                 SELECT Id, Nome, Descricao, DataCriacao, CategoriaCursoId, Valor, CargaHoraria, ProfessorId, Ativo

@@ -9,13 +9,13 @@ namespace PortalEducaAPI.Domain.Repository
 {
     public interface IProfessorRepository
     {
-        Task<Curso> ObterDetalhadoPorId(long id);
+        Task<Professor> ObterDetalhadoPorId(long id);
 
         Task DeletarPorId(long id);
-        Task AtualizarPorId(Curso curso);
+        Task AtualizarPorId(Professor professor);
 
-        Task<IEnumerable<Curso>> ObterTodos();
+        Task<IEnumerable<Professor>> ObterTodos();
 
-        Task<long> Cadastrar(Curso curso);
+        Task<long> Cadastrar(Professor professor);
     }
 }

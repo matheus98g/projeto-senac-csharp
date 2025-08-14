@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PortalEducaAPI.Domain.Dtos.Request;
-using PortalEducaAPI.Domain.Dtos.Response;
-
+﻿
+using PortalEducaAPI.Domain.Dtos.Request.Professor;
+using PortalEducaAPI.Domain.Dtos.Response.Professor;
 namespace PortalEducaAPI.Domain.Service
 {
     public interface IProfessorService
     {
-        Task<ObterDetalhadoPorIdResponse> ObterDetalhadoPorId(long id);
-        Task<CadastrarResponse> Cadastrar(CadastrarRequest cadastrarRequest);
+        Task<ObterProfessorDetalhadoPorIdResponse> ObterDetalhadoPorId(long id);
+        Task<CadastrarProfessorResponse> Cadastrar(CadastrarProfessorRequest cadastrarRequest);
         Task DeletarPorId(long id);
-        Task AtualizarPorId(long id, AtualizarRequest atualizarRequest);
+        Task AtualizarPorId(long id, AtualizarProfessorRequest atualizarRequest);
 
-        Task<IEnumerable<ObterTodosResponse>> ObterTodos();
+        Task<IEnumerable<ObterTodosProfessorResponse>> ObterTodos();
     }
 }
