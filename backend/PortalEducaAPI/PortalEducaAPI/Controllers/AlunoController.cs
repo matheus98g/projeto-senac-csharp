@@ -61,7 +61,6 @@ namespace PortalEducaAPI.Controllers
                     {
                         Mensagem = ex.Message
                     };
-
                     return BadRequest(erroResponse);
                 }
             }

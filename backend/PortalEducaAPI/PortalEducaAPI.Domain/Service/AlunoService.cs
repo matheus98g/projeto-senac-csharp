@@ -19,13 +19,13 @@ namespace PortalEducaAPI.Domain.Service
         {
             var aluno = new Aluno
             {
-                Id = request.Id,
+               
                 Nome = request.Nome,
                 Sobrenome = request.Sobrenome,
                 Email = request.Email,
                 Telefone = request.Telefone,
-                DataNascimento = request.DataNascimento,
-                Matricula = DateTime.Now,
+                DataDeNascimento = request.DataNascimento,
+                DataMatricula = DateTime.Now,
                 Ativo = true
             };
 
@@ -86,8 +86,8 @@ namespace PortalEducaAPI.Domain.Service
                 Sobrenome = aluno.Sobrenome,
                 Email = aluno.Email,
                 Telefone = aluno.Telefone,
-                DataNascimento = aluno.DataNascimento,
-                Matricula = aluno.Matricula,
+                DataNascimento = aluno.DataDeNascimento,
+                Matricula = aluno.DataMatricula,
                 Ativo = aluno.Ativo
             };
         }

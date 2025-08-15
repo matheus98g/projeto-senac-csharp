@@ -27,7 +27,7 @@ namespace PortalEducaAPI.Infra
                 UPDATE Curso
                 SET Nome = @Nome,
                     Descricao = @Descricao,
-                    CategoriaCursoId = @CategoriaCursoId,
+                    CategoriaCursoId = @Categoria,
                     Valor = @Valor,
                     CargaHoraria = @CargaHoraria,
                     ProfessorId = @ProfessorId,
@@ -46,7 +46,7 @@ namespace PortalEducaAPI.Infra
                 (Nome, Descricao, DataCriacao, CategoriaCursoId, Valor, CargaHoraria, ProfessorId, Ativo)
                 OUTPUT INSERTED.Id
                 VALUES
-                (@Nome, @Descricao, @DataCriacao, @CategoriaCursoId, @Valor, @CargaHoraria, @ProfessorId, @Ativo)
+                (@Nome, @Descricao, @DataCriacao, @Categoria, @Valor, @CargaHoraria, @ProfessorId, @Ativo)
             ";
 
             var connection = _connectionFactory.CreateConnection();
@@ -80,9 +80,19 @@ namespace PortalEducaAPI.Infra
         async Task<Curso> ICursoRepository.ObterDetalhadoPorId(long id)
         {
             var sql = @"
-                SELECT Id, Nome, Descricao, DataCriacao, CategoriaCursoId, Valor, CargaHoraria, ProfessorId, Ativo
-                FROM Curso
-                WHERE Id = @Id
+            SELECT 
+                c.Id, 
+                c.Nome, 
+                c.Descricao, 
+                c.DataCriacao, 
+                cc.Id AS CategoriaCursoId, 
+                c.Valor, 
+                c.CargaHoraria, 
+                c.ProfessorId, 
+                c.Ativo
+            FROM Curso c
+            INNER JOIN CategoriaCurso cc ON cc.Id = c.CategoriaCursoId
+            WHERE c.Id = @Id
             ";
 
             var connection = _connectionFactory.CreateConnection();

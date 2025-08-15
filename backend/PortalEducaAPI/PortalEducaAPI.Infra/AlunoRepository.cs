@@ -20,7 +20,7 @@ namespace PortalEducaAPI.Infra
             var sql = @"
                 INSERT INTO Aluno (Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataMatricula, Ativo)
                 OUTPUT INSERTED.Id
-                VALUES (@Nome, @Sobrenome, @DataDeNascimento, @Email, @Telefone, @DataMatricula, @Ativo)
+                VALUES (@Nome, @Sobrenome, @DataNascimento, @Email, @Telefone, @Matricula, @Ativo)
             ";
 
             using var connection = _connectionFactory.CreateConnection();
@@ -31,12 +31,12 @@ namespace PortalEducaAPI.Infra
         {
             var sql = @"
                 UPDATE Aluno
-                SET Nome = @Nome,
-                    Sobrenome = @Sobrenome,
-                    DataDeNascimento = @DataDeNascimento,
+                SET 
+                    
+                    
                     Email = @Email,
                     Telefone = @Telefone,
-                    DataMatricula = @DataMatricula,
+                    
                     Ativo = @Ativo
                 WHERE Id = @Id
             ";

@@ -14,9 +14,9 @@ namespace PortalEducaAPI.Domain.Dtos.Response.Aluno
         public bool Ativo { get; set; }
         public string Email { get; set; }
         public string Telefone { get; set; }
-        public DateTime? DataNascimento { get; set; }
+        public DateTime DataNascimento { get; set; }
 
-        public DateTime? Matricula { get; set; }
+        public DateTime Matricula { get; set; }
 
     
     }
