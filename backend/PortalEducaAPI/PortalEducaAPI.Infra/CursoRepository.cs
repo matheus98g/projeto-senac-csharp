@@ -85,7 +85,7 @@ namespace PortalEducaAPI.Infra
                 c.Nome, 
                 c.Descricao, 
                 c.DataCriacao, 
-                cc.Id AS CategoriaCursoId, 
+                cc.Id AS Categoria, 
                 c.Valor, 
                 c.CargaHoraria, 
                 c.ProfessorId, 

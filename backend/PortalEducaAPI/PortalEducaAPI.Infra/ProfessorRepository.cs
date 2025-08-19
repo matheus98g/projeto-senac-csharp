@@ -29,7 +29,7 @@ namespace PortalEducaAPI.Infra
                     Email = @Email,
                     Telefone = @Telefone,
                     DataContratacao = @DataContratacao,
-                    FormacaoId = @FormacaoId,
+                    FormacaoProfessorId = @FormacaoId,
                     Ativo = @Ativo
                 WHERE Id = @Id
             ";
@@ -42,7 +42,7 @@ namespace PortalEducaAPI.Infra
         {
             var sql = @"
                 INSERT INTO Professor
-                (Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataContratacao, FormacaoId, Ativo)
+                (Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataContratacao, FormacaoProfessorId, Ativo)
                 OUTPUT INSERTED.Id
                 VALUES
                 (@Nome, @Sobrenome, @DataDeNascimento, @Email, @Telefone, @DataContratacao, @FormacaoId, @Ativo)
@@ -79,7 +79,7 @@ namespace PortalEducaAPI.Infra
         public async Task<Professor> ObterDetalhadoPorId(long id)
         {
             var sql = @"
-                SELECT Id, Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataContratacao, FormacaoId, Ativo
+                SELECT Id, Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataContratacao, FormacaoProfessorId, Ativo
                 FROM Professor
                 WHERE Id = @Id
             ";
@@ -91,7 +91,7 @@ namespace PortalEducaAPI.Infra
         public async Task<IEnumerable<Professor>> ObterTodos()
         {
             var sql = @"
-                SELECT Id, Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataContratacao, FormacaoId, Ativo
+                SELECT Id, Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataContratacao, FormacaoProfessorId, Ativo
                 FROM Professor
             ";
 
