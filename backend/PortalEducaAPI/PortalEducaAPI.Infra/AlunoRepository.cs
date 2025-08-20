@@ -20,7 +20,7 @@ namespace PortalEducaAPI.Infra
             var sql = @"
                 INSERT INTO Aluno (Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataMatricula, Ativo)
                 OUTPUT INSERTED.Id
-                VALUES (@Nome, @Sobrenome, @DataNascimento, @Email, @Telefone, @Matricula, @Ativo)
+                VALUES (@Nome, @Sobrenome, @DataDeNascimento, @Email, @Telefone, @DataMatricula, @Ativo)
             ";
 
             using var connection = _connectionFactory.CreateConnection();

@@ -61,22 +61,7 @@ namespace PortalEducaAPI.Infra
             await connection.QueryFirstOrDefaultAsync(sql, new { Id = id });
         }
 
-        public async Task DevolverJogo(Curso curso)
-        {
-            var sql = @"
-            UPDATE Jogos
-            SET
-                Disponivel = @Disponivel,
-                Responsavel = @Responsavel,
-                DataEntrega = @DataEntrega
-            WHERE
-                Id = @Id
-        ";
-
-            var connection = _connectionFactory.CreateConnection();
-            await connection.QueryFirstOrDefaultAsync(sql, curso);
-        }
-
+        
         async Task<Curso> ICursoRepository.ObterDetalhadoPorId(long id)
         {
             var sql = @"
