@@ -23,21 +23,35 @@ namespace PortalEducaAPI.Infra
         {
             var sql = @"
                 UPDATE Professor
-                SET Nome = @Nome,
+                SET 
+                    Nome = @Nome,
                     Sobrenome = @Sobrenome,
                     DataDeNascimento = @DataDeNascimento,
                     Email = @Email,
                     Telefone = @Telefone,
                     DataContratacao = @DataContratacao,
-                    FormacaoProfessorId = @FormacaoId,
+                    FormacaoProfessorId = @Formacao,
                     Ativo = @Ativo
                 WHERE Id = @Id
             ";
 
+
             var connection = _connectionFactory.CreateConnection();
             await connection.QueryFirstOrDefaultAsync(sql, professor);
         }
+        public async Task<bool> ProfessorPossuiCursosVinculados(long professorId)
+        {
+            var sql = @"
+        SELECT COUNT(1)
+        FROM Curso
+        WHERE ProfessorId = @ProfessorId
+    ";
 
+            var connection = _connectionFactory.CreateConnection();
+            int count = await connection.QueryFirstOrDefaultAsync<int>(sql, new { ProfessorId = professorId });
+
+            return count > 0;
+        }
         public async Task<long> Cadastrar(Professor professor)
         {
             var sql = @"
@@ -45,7 +59,7 @@ namespace PortalEducaAPI.Infra
                 (Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataContratacao, FormacaoProfessorId, Ativo)
                 OUTPUT INSERTED.Id
                 VALUES
-                (@Nome, @Sobrenome, @DataDeNascimento, @Email, @Telefone, @DataContratacao, @FormacaoId, @Ativo)
+                (@Nome, @Sobrenome, @DataDeNascimento, @Email, @Telefone, @DataContratacao, @Formacao, @Ativo)
             ";
 
             var connection = _connectionFactory.CreateConnection();
@@ -60,29 +74,26 @@ namespace PortalEducaAPI.Infra
             await connection.QueryFirstOrDefaultAsync(sql, new { Id = id });
         }
 
-        public async Task DevolverJogo(Professor professor)
-        {
-            var sql = @"
-            UPDATE Jogos
-            SET
-                Disponivel = @Disponivel,
-                Responsavel = @Responsavel,
-                DataEntrega = @DataEntrega
-            WHERE
-                Id = @Id
-        ";
-
-            var connection = _connectionFactory.CreateConnection();
-            await connection.QueryFirstOrDefaultAsync(sql, professor);
-        }
+       
 
         public async Task<Professor> ObterDetalhadoPorId(long id)
         {
             var sql = @"
-                SELECT Id, Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataContratacao, FormacaoProfessorId, Ativo
-                FROM Professor
-                WHERE Id = @Id
+                SELECT 
+                    p.Id,
+                    p.Nome,
+                    p.Sobrenome,
+                    p.DataDeNascimento,
+                    p.Email,
+                    p.Telefone,
+                    p.DataContratacao,
+                    cc.Id AS Formacao,
+                    p.Ativo
+                FROM Professor p
+                INNER JOIN FormacaoProfessor cc ON cc.Id = p.FormacaoProfessorId
+                WHERE p.Id = @Id
             ";
+
 
             var connection = _connectionFactory.CreateConnection();
             return await connection.QueryFirstOrDefaultAsync<Professor>(sql, new { Id = id });
