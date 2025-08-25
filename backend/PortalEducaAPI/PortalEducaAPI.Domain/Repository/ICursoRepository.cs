@@ -14,5 +14,12 @@ namespace PortalEducaAPI.Domain.Repository
         Task DeletarPorId(long id);
         Task<Curso> ObterDetalhadoPorId(long id);
         Task<IEnumerable<Curso>> ObterTodos();
+        
+        // Métodos de busca e filtros conforme README linha 99
+        Task<IEnumerable<Curso>> BuscarPorNome(string nome);
+        Task<IEnumerable<Curso>> BuscarPorCategoria(CategoriaCurso categoria);
+        Task<IEnumerable<Curso>> BuscarPorValorMinimo(decimal valorMinimo);
+        Task<IEnumerable<Curso>> BuscarComFiltros(string? nome = null, CategoriaCurso? categoria = null, decimal? valorMinimo = null);
+        Task<IEnumerable<Curso>> ObterAtivos();
     }
 }

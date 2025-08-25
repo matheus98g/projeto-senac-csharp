@@ -9,11 +9,14 @@ namespace PortalEducaAPI.Domain.Repository
 {
     public interface IAlunoRepository
     {
-
         Task<long> Cadastrar(Aluno aluno);
         Task AtualizarPorId(Aluno aluno);
         Task DeletarPorId(long id);
         Task<Aluno> ObterDetalhadoPorId(long id);
         Task<IEnumerable<Aluno>> ObterTodos();
+        
+        // Métodos de busca conforme README linha 91
+        Task<IEnumerable<Aluno>> BuscarPorNome(string nome);
+        Task<IEnumerable<Aluno>> ObterAtivos();
     }
 }

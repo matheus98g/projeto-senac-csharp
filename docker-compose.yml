@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: portaleduca-postgres
+    environment:
+      POSTGRES_DB: portaleduca
+      POSTGRES_USER: portaleduca
+      POSTGRES_PASSWORD: portaleduca
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - portaleduca-network
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: portaleduca-backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=portaleduca;Username=portaleduca;Password=portaleduca
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+    depends_on:
+      - postgres
+    networks:
+      - portaleduca-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: portaleduca-frontend
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:5000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - portaleduca-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  portaleduca-network:
+    driver: bridge

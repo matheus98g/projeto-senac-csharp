@@ -7,9 +7,12 @@ using PortalEducaAPI.Infra.DatabaseConfiguration;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configuração da conexão com banco de dados
-builder.Services.AddScoped<IDbConnectionFactory>(x =>
+builder.Services.AddScoped<IDbConnectionFactory>(serviceProvider =>
 {
-    return new DbConnectionFactory("Host=localhost;Port=5432;Database=portaleduca;Username=portaleduca;Password=portaleduca");
+    var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+    var connectionString = configuration.GetConnectionString("DefaultConnection") 
+        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    return new DbConnectionFactory(connectionString);
 });
 
 // Injeção de dependência - Services
@@ -21,6 +24,8 @@ builder.Services.AddScoped<IProfessorService, ProfessorService>();
 builder.Services.AddScoped<IAlunoRepository, AlunoRepository>();
 builder.Services.AddScoped<ICursoRepository, CursoRepository>();
 builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
+builder.Services.AddScoped<IProfessorCursoRepository, ProfessorCursoRepository>();
+builder.Services.AddScoped<IAlunoCursoRepository, AlunoCursoRepository>();
 
 // Configuração de CORS
 builder.Services.AddCors(options =>
