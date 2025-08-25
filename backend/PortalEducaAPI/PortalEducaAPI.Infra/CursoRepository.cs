@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dapper;
 using PortalEducaAPI.Domain.Models;
@@ -19,87 +16,67 @@ namespace PortalEducaAPI.Infra
             _connectionFactory = connectionFactory;
         }
 
-        
+        public async Task<long> Cadastrar(Curso curso)
+        {
+            var sql = @"
+                INSERT INTO public.curso
+                (nome, descricao, data_criacao, categoria, valor, carga_horaria, professor_id, ativo)
+                VALUES
+                (@Nome, @Descricao, @DataCriacao, @Categoria, @Valor, @CargaHoraria, @ProfessorId, @Ativo)
+                RETURNING id
+            ";
+
+            using var connection = _connectionFactory.CreateConnection();
+            return await connection.QueryFirstOrDefaultAsync<long>(sql, curso);
+        }
 
         public async Task AtualizarPorId(Curso curso)
         {
             var sql = @"
-                UPDATE Curso
-                SET Nome = @Nome,
-                    Descricao = @Descricao,
-                    CategoriaCursoId = @CategoriaCursoId,
-                    Valor = @Valor,
-                    CargaHoraria = @CargaHoraria,
-                    ProfessorId = @ProfessorId,
-                    Ativo = @Ativo
-                WHERE Id = @Id
+                UPDATE public.curso
+                SET nome = @Nome,
+                    descricao = @Descricao,
+                    categoria = @Categoria,
+                    valor = @Valor,
+                    carga_horaria = @CargaHoraria,
+                    professor_id = @ProfessorId,
+                    ativo = @Ativo
+                WHERE id = @Id
             ";
 
-            var connection = _connectionFactory.CreateConnection();
-            await connection.QueryFirstOrDefaultAsync(sql, curso);
-        }
-
-        public async Task<long> Cadastrar(Curso curso)
-        {
-            var sql = @"
-                INSERT INTO Curso
-                (Nome, Descricao, DataCriacao, CategoriaCursoId, Valor, CargaHoraria, ProfessorId, Ativo)
-                OUTPUT INSERTED.Id
-                VALUES
-                (@Nome, @Descricao, @DataCriacao, @CategoriaCursoId, @Valor, @CargaHoraria, @ProfessorId, @Ativo)
-            ";
-
-            var connection = _connectionFactory.CreateConnection();
-            return await connection.QueryFirstOrDefaultAsync<long>(sql, curso);
+            using var connection = _connectionFactory.CreateConnection();
+            await connection.ExecuteAsync(sql, curso);
         }
 
         public async Task DeletarPorId(long id)
         {
-            var sql = @"DELETE FROM Curso WHERE Id = @Id";
+            var sql = @"DELETE FROM public.curso WHERE id = @Id";
 
-            var connection = _connectionFactory.CreateConnection();
-            await connection.QueryFirstOrDefaultAsync(sql, new { Id = id });
+            using var connection = _connectionFactory.CreateConnection();
+            await connection.ExecuteAsync(sql, new { Id = id });
         }
 
-        public async Task DevolverJogo(Curso curso)
+        public async Task<Curso> ObterDetalhadoPorId(long id)
         {
             var sql = @"
-            UPDATE Jogos
-            SET
-                Disponivel = @Disponivel,
-                Responsavel = @Responsavel,
-                DataEntrega = @DataEntrega
-            WHERE
-                Id = @Id
-        ";
-
-            var connection = _connectionFactory.CreateConnection();
-            await connection.QueryFirstOrDefaultAsync(sql, curso);
-        }
-
-        async Task<Curso> ICursoRepository.ObterDetalhadoPorId(long id)
-        {
-            var sql = @"
-                SELECT Id, Nome, Descricao, DataCriacao, CategoriaCursoId, Valor, CargaHoraria, ProfessorId, Ativo
-                FROM Curso
-                WHERE Id = @Id
+                SELECT id, nome, descricao, data_criacao, categoria, valor, carga_horaria, professor_id, ativo
+                FROM public.curso
+                WHERE id = @Id
             ";
 
-            var connection = _connectionFactory.CreateConnection();
+            using var connection = _connectionFactory.CreateConnection();
             return await connection.QueryFirstOrDefaultAsync<Curso>(sql, new { Id = id });
         }
 
         public async Task<IEnumerable<Curso>> ObterTodos()
         {
             var sql = @"
-                SELECT Id, Nome, Descricao, DataCriacao, CategoriaCursoId, Valor, CargaHoraria, ProfessorId, Ativo
-                FROM Curso
+                SELECT id, nome, descricao, data_criacao, categoria, valor, carga_horaria, professor_id, ativo
+                FROM public.curso
             ";
 
-            var connection = _connectionFactory.CreateConnection();
-            return (IEnumerable<Curso>)await connection.QueryAsync<Curso>(sql);
+            using var connection = _connectionFactory.CreateConnection();
+            return await connection.QueryAsync<Curso>(sql);
         }
-
     }
-
 }

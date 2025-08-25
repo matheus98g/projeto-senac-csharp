@@ -1,8 +1,6 @@
 // Cliente para consumir API local em C#
 
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://sua-api-producao.com' 
-  : 'http://localhost:5007' // Porta da sua API C#
+const API_BASE_URL = 'http://localhost:5007' // Porta da sua API C#
 
 export interface Aluno {
   id: number
@@ -19,8 +17,12 @@ export interface Curso {
   id: number
   nome: string
   descricao?: string
-  cargaHoraria?: number
+  valor: number
+  dataCriacao?: string
+  ProfessorId?: number
+  CargaHoraria?: number
   categoria?: string
+  ativo: boolean
   // Adicione outros campos conforme seu modelo C#
 }
 
@@ -30,6 +32,7 @@ export interface Professor {
   email: string
   telefone?: string
   especialidade?: string
+  dataNascimento?: string
   // Adicione outros campos conforme seu modelo C#
 }
 
@@ -81,87 +84,87 @@ class ApiClient {
 
   // ========== ALUNOS ==========
   async obterTodosAlunos(): Promise<Aluno[]> {
-    return this.request<Aluno[]>('/Aluno')
+    return this.request<Aluno[]>('/aluno')
   }
 
   async obterAlunoPorId(id: number): Promise<Aluno> {
-    return this.request<Aluno>(`/Aluno/${id}`)
+    return this.request<Aluno>(`/aluno/${id}`)
   }
 
   async cadastrarAluno(dados: Omit<Aluno, 'id'>): Promise<any> {
-    return this.request('/Aluno', {
+    return this.request('/aluno', {
       method: 'POST',
       body: JSON.stringify(dados)
     })
   }
 
   async atualizarAluno(id: number, dados: Partial<Aluno>): Promise<void> {
-    return this.request(`/Aluno/${id}`, {
+    return this.request(`/aluno/${id}`, {
       method: 'PUT',
       body: JSON.stringify(dados)
     })
   }
 
   async deletarAluno(id: number): Promise<void> {
-    return this.request(`/Aluno/${id}`, {
+    return this.request(`/aluno/${id}`, {
       method: 'DELETE'
     })
   }
 
   // ========== CURSOS ==========
   async obterTodosCursos(): Promise<Curso[]> {
-    return this.request<Curso[]>('/Curso')
+    return this.request<Curso[]>('/curso')
   }
 
   async obterCursoPorId(id: number): Promise<Curso> {
-    return this.request<Curso>(`/Curso/${id}`)
+    return this.request<Curso>(`/curso/${id}`)
   }
 
   async cadastrarCurso(dados: Omit<Curso, 'id'>): Promise<any> {
-    return this.request('/Curso', {
+    return this.request('/curso', {
       method: 'POST',
       body: JSON.stringify(dados)
     })
   }
 
   async atualizarCurso(id: number, dados: Partial<Curso>): Promise<void> {
-    return this.request(`/Curso/${id}`, {
+    return this.request(`/curso/${id}`, {
       method: 'PUT',
       body: JSON.stringify(dados)
     })
   }
 
   async deletarCurso(id: number): Promise<void> {
-    return this.request(`/Curso/${id}`, {
+    return this.request(`/curso/${id}`, {
       method: 'DELETE'
     })
   }
 
   // ========== PROFESSORES ==========
   async obterTodosProfessores(): Promise<Professor[]> {
-    return this.request<Professor[]>('/Professor')
+    return this.request<Professor[]>('/professor')
   }
 
   async obterProfessorPorId(id: number): Promise<Professor> {
-    return this.request<Professor>(`/Professor/${id}`)
+    return this.request<Professor>(`/professor/${id}`)
   }
 
   async cadastrarProfessor(dados: Omit<Professor, 'id'>): Promise<any> {
-    return this.request('/Professor', {
+    return this.request('/professor', {
       method: 'POST',
       body: JSON.stringify(dados)
     })
   }
 
   async atualizarProfessor(id: number, dados: Partial<Professor>): Promise<void> {
-    return this.request(`/Professor/${id}`, {
+    return this.request(`/professor/${id}`, {
       method: 'PUT',
       body: JSON.stringify(dados)
     })
   }
 
   async deletarProfessor(id: number): Promise<void> {
-    return this.request(`/Professor/${id}`, {
+    return this.request(`/professor/${id}`, {
       method: 'DELETE'
     })
   }

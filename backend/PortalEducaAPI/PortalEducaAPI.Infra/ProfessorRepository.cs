@@ -22,82 +22,67 @@ namespace PortalEducaAPI.Infra
         public async Task AtualizarPorId(Professor professor)
         {
             var sql = @"
-                UPDATE Professor
-                SET Nome = @Nome,
-                    Sobrenome = @Sobrenome,
-                    DataDeNascimento = @DataDeNascimento,
-                    Email = @Email,
-                    Telefone = @Telefone,
-                    DataContratacao = @DataContratacao,
-                    FormacaoId = @FormacaoId,
-                    Ativo = @Ativo
-                WHERE Id = @Id
+                UPDATE public.professor
+                SET nome = @Nome,
+                    sobrenome = @Sobrenome,
+                    data_nascimento = @DataDeNascimento,
+                    email = @Email,
+                    telefone = @Telefone,
+                    data_contratacao = @DataContratacao,
+                    formacao = @Formacao,
+                    ativo = @Ativo
+                WHERE id = @Id
             ";
 
-            var connection = _connectionFactory.CreateConnection();
-            await connection.QueryFirstOrDefaultAsync(sql, professor);
+            using var connection = _connectionFactory.CreateConnection();
+            await connection.ExecuteAsync(sql, professor);
         }
 
         public async Task<long> Cadastrar(Professor professor)
         {
             var sql = @"
-                INSERT INTO Professor
-                (Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataContratacao, FormacaoId, Ativo)
-                OUTPUT INSERTED.Id
+                INSERT INTO public.professor
+                (nome, sobrenome, data_nascimento, email, telefone, data_contratacao, formacao, ativo)
                 VALUES
-                (@Nome, @Sobrenome, @DataDeNascimento, @Email, @Telefone, @DataContratacao, @FormacaoId, @Ativo)
+                (@Nome, @Sobrenome, @DataDeNascimento, @Email, @Telefone, @DataContratacao, @Formacao, @Ativo)
+                RETURNING id
             ";
 
-            var connection = _connectionFactory.CreateConnection();
+            using var connection = _connectionFactory.CreateConnection();
             return await connection.QueryFirstOrDefaultAsync<long>(sql, professor);
         }
 
         public async Task DeletarPorId(long id)
         {
-            var sql = @"DELETE FROM Professor WHERE Id = @Id";
+            var sql = @"DELETE FROM professor WHERE id = @Id";
 
-            var connection = _connectionFactory.CreateConnection();
-            await connection.QueryFirstOrDefaultAsync(sql, new { Id = id });
-        }
-
-        public async Task DevolverJogo(Professor professor)
-        {
-            var sql = @"
-            UPDATE Jogos
-            SET
-                Disponivel = @Disponivel,
-                Responsavel = @Responsavel,
-                DataEntrega = @DataEntrega
-            WHERE
-                Id = @Id
-        ";
-
-            var connection = _connectionFactory.CreateConnection();
-            await connection.QueryFirstOrDefaultAsync(sql, professor);
+            using var connection = _connectionFactory.CreateConnection();
+            await connection.ExecuteAsync(sql, new { Id = id });
         }
 
         public async Task<Professor> ObterDetalhadoPorId(long id)
         {
             var sql = @"
-                SELECT Id, Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataContratacao, FormacaoId, Ativo
-                FROM Professor
-                WHERE Id = @Id
+                SELECT id, nome, sobrenome, data_nascimento, email, telefone, data_contratacao, formacao, ativo
+                FROM public.professor
+                WHERE id = @Id
             ";
 
-            var connection = _connectionFactory.CreateConnection();
+            using var connection = _connectionFactory.CreateConnection();
             return await connection.QueryFirstOrDefaultAsync<Professor>(sql, new { Id = id });
         }
 
         public async Task<IEnumerable<Professor>> ObterTodos()
         {
             var sql = @"
-                SELECT Id, Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataContratacao, FormacaoId, Ativo
-                FROM Professor
+                SELECT id, nome, sobrenome, data_nascimento, email, telefone, data_contratacao, formacao, ativo
+                FROM public.professor
             ";
 
-            var connection = _connectionFactory.CreateConnection();
+            using var connection = _connectionFactory.CreateConnection();
             return await connection.QueryAsync<Professor>(sql);
         }
+
     }
 
 }

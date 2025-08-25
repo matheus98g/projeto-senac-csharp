@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
+﻿using System.Data;
+using Npgsql; // Ensure you have the Npgsql package installed for PostgreSQL support
 
 namespace PortalEducaAPI.Infra.DatabaseConfiguration
 {
-    public class DbConnectionFactory: IDbConnectionFactory
+    public class DbConnectionFactory : IDbConnectionFactory
     {
         private readonly string _connectionString;
 
@@ -19,8 +14,7 @@ namespace PortalEducaAPI.Infra.DatabaseConfiguration
 
         public IDbConnection CreateConnection()
         {
-            return new SqlConnection(_connectionString);
+            return new NpgsqlConnection(_connectionString);
         }
     }
 }
-

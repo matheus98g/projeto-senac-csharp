@@ -18,9 +18,9 @@ namespace PortalEducaAPI.Infra
         public async Task<long> Cadastrar(Aluno aluno)
         {
             var sql = @"
-                INSERT INTO Aluno (Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataMatricula, Ativo)
-                OUTPUT INSERTED.Id
-                VALUES (@Nome, @Sobrenome, @DataDeNascimento, @Email, @Telefone, @DataMatricula, @Ativo)
+                INSERT INTO aluno (nome, sobrenome, data_nascimento, email, telefone, matricula, ativo)
+                VALUES (@Nome, @Sobrenome, @DataNascimento, @Email, @Telefone, @Matricula, @Ativo)
+                RETURNING id
             ";
 
             using var connection = _connectionFactory.CreateConnection();
@@ -30,15 +30,15 @@ namespace PortalEducaAPI.Infra
         public async Task AtualizarPorId(Aluno aluno)
         {
             var sql = @"
-                UPDATE Aluno
-                SET Nome = @Nome,
-                    Sobrenome = @Sobrenome,
-                    DataDeNascimento = @DataDeNascimento,
-                    Email = @Email,
-                    Telefone = @Telefone,
-                    DataMatricula = @DataMatricula,
-                    Ativo = @Ativo
-                WHERE Id = @Id
+                UPDATE aluno
+                SET nome = @Nome,
+                    sobrenome = @Sobrenome,
+                    data_nascimento = @DataNascimento,
+                    email = @Email,
+                    telefone = @Telefone,
+                    matricula = @Matricula,
+                    ativo = @Ativo
+                WHERE id = @Id
             ";
 
             using var connection = _connectionFactory.CreateConnection();
@@ -47,7 +47,7 @@ namespace PortalEducaAPI.Infra
 
         public async Task DeletarPorId(long id)
         {
-            var sql = @"DELETE FROM Aluno WHERE Id = @Id";
+            var sql = @"DELETE FROM aluno WHERE id = @Id";
 
             using var connection = _connectionFactory.CreateConnection();
             await connection.ExecuteAsync(sql, new { Id = id });
@@ -56,9 +56,9 @@ namespace PortalEducaAPI.Infra
         public async Task<Aluno> ObterDetalhadoPorId(long id)
         {
             var sql = @"
-                SELECT Id, Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataMatricula, Ativo
-                FROM Aluno
-                WHERE Id = @Id
+                SELECT id, nome, sobrenome, data_nascimento, email, telefone, matricula, ativo
+                FROM aluno
+                WHERE id = @Id
             ";
 
             using var connection = _connectionFactory.CreateConnection();
@@ -68,8 +68,8 @@ namespace PortalEducaAPI.Infra
         public async Task<IEnumerable<Aluno>> ObterTodos()
         {
             var sql = @"
-                SELECT Id, Nome, Sobrenome, DataDeNascimento, Email, Telefone, DataMatricula, Ativo
-                FROM Aluno
+                SELECT id, nome, sobrenome, data_nascimento, email, telefone, matricula, ativo
+                FROM aluno
             ";
 
             using var connection = _connectionFactory.CreateConnection();

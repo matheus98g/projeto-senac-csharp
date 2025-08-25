@@ -6,22 +6,33 @@ using PortalEducaAPI.Infra.DatabaseConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+// Configuração da conexão com banco de dados
 builder.Services.AddScoped<IDbConnectionFactory>(x =>
 {
-    return new DbConnectionFactory("Server=(localdb)\\MSSQLLocalDB; Database=PortalEduca; Trusted_Connection=True;");
+    return new DbConnectionFactory("Host=localhost;Port=5432;Database=portaleduca;Username=portaleduca;Password=portaleduca");
 });
-// Add services to the container.
-builder.Services.AddScoped<IAlunoService, AlunoService>(); // a cada nova requisicao, o proprio .net dá um new no CarroService
-builder.Services.AddScoped<IAlunoRepository, AlunoRepository>(); // a cada nova requisicao, o proprio .net dá um new no CarroRepository
 
-builder.Services.AddScoped<ICursoService, CursoService>(); // a cada nova requisicao, o proprio .net dá um new no CarroService
-builder.Services.AddScoped<ICursoRepository, CursoRepository>(); // a cada nova requisicao, o proprio .net dá um new no CarroRepository
+// Injeção de dependência - Services
+builder.Services.AddScoped<IAlunoService, AlunoService>();
+builder.Services.AddScoped<ICursoService, CursoService>();
+builder.Services.AddScoped<IProfessorService, ProfessorService>();
 
+// Injeção de dependência - Repositories
+builder.Services.AddScoped<IAlunoRepository, AlunoRepository>();
+builder.Services.AddScoped<ICursoRepository, CursoRepository>();
+builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
 
-builder.Services.AddScoped<IProfessorService, ProfessorService>(); // a cada nova requisicao, o proprio .net dá um new no CarroService
-builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>(); // a cada nova requisicao, o proprio .net dá um new no CarroRepository
-
+// Configuração de CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000", "http://localhost:3001") // URLs do frontend Next.js
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -32,19 +43,18 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
-
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
-
-    app.UseHttpsRedirection();
-
-    app.UseAuthorization();
-
-    app.MapControllers();
-
-    app.Run();
-
-
 }
+
+// Usar CORS antes de outras configurações
+app.UseCors("AllowFrontend");
+
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
