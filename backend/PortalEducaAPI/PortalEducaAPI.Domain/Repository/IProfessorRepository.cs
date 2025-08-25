@@ -17,5 +17,6 @@ namespace PortalEducaAPI.Domain.Repository
         Task<IEnumerable<Professor>> ObterTodos();
 
         Task<long> Cadastrar(Professor professor);
+        Task<bool> ProfessorPossuiCursosVinculados(long professorId);
     }
 }

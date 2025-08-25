@@ -56,12 +56,23 @@ namespace PortalEducaAPI.Infra
             await connection.ExecuteAsync(sql, new { Id = id });
         }
 
-        public async Task<Curso> ObterDetalhadoPorId(long id)
+        
+        async Task<Curso> ICursoRepository.ObterDetalhadoPorId(long id)
         {
             var sql = @"
-                SELECT id, nome, descricao, data_criacao, categoria, valor, carga_horaria, professor_id, ativo
-                FROM public.curso
-                WHERE id = @Id
+            SELECT 
+                c.Id, 
+                c.Nome, 
+                c.Descricao, 
+                c.DataCriacao, 
+                cc.Id AS Categoria, 
+                c.Valor, 
+                c.CargaHoraria, 
+                c.ProfessorId, 
+                c.Ativo
+            FROM Curso c
+            INNER JOIN CategoriaCurso cc ON cc.Id = c.CategoriaCursoId
+            WHERE c.Id = @Id
             ";
 
             using var connection = _connectionFactory.CreateConnection();

@@ -37,7 +37,19 @@ namespace PortalEducaAPI.Infra
             using var connection = _connectionFactory.CreateConnection();
             await connection.ExecuteAsync(sql, professor);
         }
+        public async Task<bool> ProfessorPossuiCursosVinculados(long professorId)
+        {
+            var sql = @"
+        SELECT COUNT(1)
+        FROM Curso
+        WHERE ProfessorId = @ProfessorId
+    ";
 
+            var connection = _connectionFactory.CreateConnection();
+            int count = await connection.QueryFirstOrDefaultAsync<int>(sql, new { ProfessorId = professorId });
+
+            return count > 0;
+        }
         public async Task<long> Cadastrar(Professor professor)
         {
             var sql = @"

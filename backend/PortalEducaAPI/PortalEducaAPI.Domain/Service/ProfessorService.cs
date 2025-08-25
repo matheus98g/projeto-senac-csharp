@@ -33,6 +33,7 @@ namespace PortalEducaAPI.Domain.Service
                 Email = cadastrarRequest.Email,
                 DataContratacao = DateTime.Now,
                 Formacao = formacao,
+                DataDeNascimento = cadastrarRequest.DataDeNascimento,
                 Ativo = true
             };
 
@@ -71,7 +72,13 @@ namespace PortalEducaAPI.Domain.Service
             if (professor == null)
                 throw new Exception($"Não foi encontrado um professor com o ID {id}.");
 
+            bool possuiCursos = await _professorRepository.ProfessorPossuiCursosVinculados(id);
+
+            if (possuiCursos)
+                throw new Exception("Não é possível excluir o professor, pois ele está vinculado a um ou mais cursos.");
+
             await _professorRepository.DeletarPorId(id);
+
         }
 
         public async Task<IEnumerable<ObterTodosProfessorResponse>> ObterTodos()

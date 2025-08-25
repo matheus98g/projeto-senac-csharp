@@ -111,7 +111,6 @@ namespace PortalEducaAPI.Domain.Service
                 Id = curso.Id,
                 Nome = curso.Nome,
                 Descricao = curso.Descricao,
-                Telefone = curso.Telefone,
                 Valor = curso.Valor,
                 Categoria = curso.Categoria.ToString(),
                 DataCriacao = curso.DataCriacao,
