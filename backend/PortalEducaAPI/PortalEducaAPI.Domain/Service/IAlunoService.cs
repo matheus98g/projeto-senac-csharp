@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PortalEducaAPI.Domain.Dtos.Request.Aluno;
+﻿using PortalEducaAPI.Domain.Dtos.Request.Aluno;
 using PortalEducaAPI.Domain.Dtos.Response.Aluno;
 
 namespace PortalEducaAPI.Domain.Service

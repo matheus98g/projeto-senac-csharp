@@ -1,5 +1,4 @@
-﻿
-using PortalEducaAPI.Domain.Dtos.Request.Professor;
+﻿using PortalEducaAPI.Domain.Dtos.Request.Professor;
 using PortalEducaAPI.Domain.Dtos.Response.Professor;
 namespace PortalEducaAPI.Domain.Service
 {

@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PortalEducaAPI.Domain.Dtos;
-using PortalEducaAPI.Domain.Dtos.Request.Curso;
 using PortalEducaAPI.Domain.Dtos.Request.Professor;
 using PortalEducaAPI.Domain.Service;
 

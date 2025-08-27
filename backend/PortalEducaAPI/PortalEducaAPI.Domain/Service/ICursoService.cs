@@ -1,5 +1,4 @@
 ﻿using PortalEducaAPI.Domain.Dtos.Request.Curso;
-using PortalEducaAPI.Domain.Dtos.Response.Aluno;
 using PortalEducaAPI.Domain.Dtos.Response.Curso;
 
 namespace PortalEducaAPI.Domain.Service
