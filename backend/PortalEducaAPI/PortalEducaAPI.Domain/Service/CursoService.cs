@@ -22,22 +22,16 @@ namespace PortalEducaAPI.Domain.Service
 
         public async Task<CadastrarCursoResponse> Cadastrar(CadastrarCursoRequest cadastrarCursoRequest)
         {
-            bool categoriaValida = Enum.TryParse(cadastrarCursoRequest.Categoria, ignoreCase: true, out CategoriaCurso categoria);
-
-            if (!categoriaValida)
-            {
-                throw new Exception($"A categoria '{cadastrarCursoRequest.Categoria}' é inválida.");
-            }
-
             var curso = new Curso
             {
                 Nome = cadastrarCursoRequest.Nome,
                 Descricao = cadastrarCursoRequest.Descricao,
                 CargaHoraria = cadastrarCursoRequest.CargaHoraria,
                 Valor = cadastrarCursoRequest.Valor,
-                Categoria = categoria,
-                Ativo = true,
-                DataCriacao = DateTime.Now
+                Categoria = cadastrarCursoRequest.Categoria,
+                Ativo = cadastrarCursoRequest.Ativo,
+                DataCriacao = cadastrarCursoRequest.DataCriacao,
+                ProfessorId = cadastrarCursoRequest.ProfessorId
             };
 
             long idResponse = await _cursoRepository.Cadastrar(curso);
@@ -50,13 +44,6 @@ namespace PortalEducaAPI.Domain.Service
 
         public async Task AtualizarPorId(long id, AtualizarCursoRequest atualizarCursoRequest)
         {
-            var categoriasValidas = Enum.GetNames(typeof(CategoriaCurso));
-
-            if (!categoriasValidas.Contains(atualizarCursoRequest.Categoria, StringComparer.OrdinalIgnoreCase))
-            {
-                throw new Exception($"A categoria '{atualizarCursoRequest.Categoria}' é inválida.");
-            }
-
             var curso = await _cursoRepository.ObterDetalhadoPorId(id);
 
             if (curso == null)
@@ -69,7 +56,7 @@ namespace PortalEducaAPI.Domain.Service
             curso.Ativo = atualizarCursoRequest.Ativo;
             curso.ProfessorId = atualizarCursoRequest.ProfessorId;
             curso.Descricao = atualizarCursoRequest.Descricao;
-            curso.Categoria = Enum.Parse<CategoriaCurso>(atualizarCursoRequest.Categoria, ignoreCase: true);
+            curso.Categoria = atualizarCursoRequest.Categoria;
 
             await _cursoRepository.AtualizarPorId(curso);
         }
@@ -93,7 +80,14 @@ namespace PortalEducaAPI.Domain.Service
             var response = cursos.Select(curso => new ObterTodosCursoResponse
             {
                 Nome = curso.Nome,
-                Id = curso.Id
+                Id = curso.Id,
+                Descricao = curso.Descricao,
+                Valor = curso.Valor,
+                DataCriacao = curso.DataCriacao,
+                ProfessorId = curso.ProfessorId,
+                CargaHoraria = curso.CargaHoraria,
+                Categoria = curso.Categoria,
+                Ativo = curso.Ativo
             });
 
             return response;

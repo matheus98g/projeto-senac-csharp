@@ -16,6 +16,7 @@ export function useCursos() {
       const dados = await apiClient.obterTodosCursos()
       setCursos(dados)
     } catch (err) {
+      console.error('Erro ao carregar cursos:', err)
       setError(err instanceof Error ? err.message : 'Erro ao carregar cursos')
     } finally {
       setLoading(false)

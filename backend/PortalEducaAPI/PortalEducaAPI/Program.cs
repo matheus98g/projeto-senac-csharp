@@ -3,6 +3,8 @@ using PortalEducaAPI.Domain.Service;
 using PortalEducaAPI.Domain.Service.PortalEducaAPI.Domain.Service;
 using PortalEducaAPI.Infra;
 using PortalEducaAPI.Infra.DatabaseConfiguration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,14 +37,39 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("http://localhost:3000", "http://localhost:3001") // URLs do frontend Next.js
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials();
+              .AllowCredentials()
+              .WithExposedHeaders("Content-Disposition"); // Permitir headers de download
     });
 });
 
-builder.Services.AddControllers();
+// Configuração de JSON usando Newtonsoft.Json
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+        options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+        options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+        options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+    })
+    .AddMvcOptions(options =>
+    {
+        options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(_ => "O campo é obrigatório.");
+        options.ModelBindingMessageProvider.SetValueMustBeANumberAccessor(_ => "O valor deve ser um número.");
+    });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.UseInlineDefinitionsForEnums();
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Portal Educa API",
+        Version = "v1",
+        Description = "API para gerenciamento de cursos, alunos e professores"
+    });
+});
 
 var app = builder.Build();
 

@@ -29,13 +29,27 @@ namespace PortalEducaAPI.Infra
                     email = @Email,
                     telefone = @Telefone,
                     data_contratacao = @DataContratacao,
-                    formacao = @Formacao::formacao_professor,
+                    formacao = @FormacaoString::formacao_professor,
                     ativo = @Ativo
                 WHERE id = @Id
             ";
 
+            // Converter o enum numérico para string para o PostgreSQL
+            var parametros = new
+            {
+                professor.Id,
+                professor.Nome,
+                professor.Sobrenome,
+                professor.DataDeNascimento,
+                professor.Email,
+                professor.Telefone,
+                professor.DataContratacao,
+                FormacaoString = professor.Formacao.ToString(),
+                professor.Ativo
+            };
+
             using var connection = _connectionFactory.CreateConnection();
-            await connection.ExecuteAsync(sql, professor);
+            await connection.ExecuteAsync(sql, parametros);
         }
         public async Task<bool> ProfessorPossuiCursosVinculados(long professorId)
         {
@@ -56,12 +70,25 @@ namespace PortalEducaAPI.Infra
                 INSERT INTO public.professor
                 (nome, sobrenome, data_nascimento, email, telefone, data_contratacao, formacao, ativo)
                 VALUES
-                (@Nome, @Sobrenome, @DataDeNascimento, @Email, @Telefone, @DataContratacao, @Formacao::formacao_professor, @Ativo)
+                (@Nome, @Sobrenome, @DataDeNascimento, @Email, @Telefone, @DataContratacao, @FormacaoString::formacao_professor, @Ativo)
                 RETURNING id
             ";
 
+            // Converter o enum numérico para string para o PostgreSQL
+            var parametros = new
+            {
+                professor.Nome,
+                professor.Sobrenome,
+                professor.DataDeNascimento,
+                professor.Email,
+                professor.Telefone,
+                professor.DataContratacao,
+                FormacaoString = professor.Formacao.ToString(),
+                professor.Ativo
+            };
+
             using var connection = _connectionFactory.CreateConnection();
-            return await connection.QueryFirstOrDefaultAsync<long>(sql, professor);
+            return await connection.QueryFirstOrDefaultAsync<long>(sql, parametros);
         }
 
         public async Task DeletarPorId(long id)

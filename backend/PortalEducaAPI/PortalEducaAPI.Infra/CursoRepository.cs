@@ -22,12 +22,25 @@ namespace PortalEducaAPI.Infra
                 INSERT INTO public.curso
                 (nome, descricao, data_criacao, categoria, valor, carga_horaria, professor_id, ativo)
                 VALUES
-                (@Nome, @Descricao, @DataCriacao, @Categoria::categoria_curso, @Valor, @CargaHoraria, @ProfessorId, @Ativo)
+                (@Nome, @Descricao, @DataCriacao, @CategoriaString::categoria_curso, @Valor, @CargaHoraria, @ProfessorId, @Ativo)
                 RETURNING id
             ";
 
+            // Converter o enum numérico para string para o PostgreSQL
+            var parametros = new
+            {
+                curso.Nome,
+                curso.Descricao,
+                curso.DataCriacao,
+                CategoriaString = curso.Categoria.ToString(),
+                curso.Valor,
+                curso.CargaHoraria,
+                curso.ProfessorId,
+                curso.Ativo
+            };
+
             using var connection = _connectionFactory.CreateConnection();
-            return await connection.QueryFirstOrDefaultAsync<long>(sql, curso);
+            return await connection.QueryFirstOrDefaultAsync<long>(sql, parametros);
         }
 
         public async Task AtualizarPorId(Curso curso)
@@ -36,7 +49,7 @@ namespace PortalEducaAPI.Infra
                 UPDATE public.curso
                 SET nome = @Nome,
                     descricao = @Descricao,
-                    categoria = @Categoria::categoria_curso,
+                    categoria = @CategoriaString::categoria_curso,
                     valor = @Valor,
                     carga_horaria = @CargaHoraria,
                     professor_id = @ProfessorId,
@@ -44,8 +57,21 @@ namespace PortalEducaAPI.Infra
                 WHERE id = @Id
             ";
 
+            // Converter o enum numérico para string para o PostgreSQL
+            var parametros = new
+            {
+                curso.Id,
+                curso.Nome,
+                curso.Descricao,
+                CategoriaString = curso.Categoria.ToString(),
+                curso.Valor,
+                curso.CargaHoraria,
+                curso.ProfessorId,
+                curso.Ativo
+            };
+
             using var connection = _connectionFactory.CreateConnection();
-            await connection.ExecuteAsync(sql, curso);
+            await connection.ExecuteAsync(sql, parametros);
         }
 
         public async Task DeletarPorId(long id)
@@ -101,12 +127,12 @@ namespace PortalEducaAPI.Infra
             var sql = @"
                 SELECT id, nome, descricao, data_criacao as DataCriacao, categoria, valor, carga_horaria as CargaHoraria, professor_id as ProfessorId, ativo
                 FROM public.curso
-                WHERE categoria = @Categoria::categoria_curso
+                WHERE categoria = @CategoriaString::categoria_curso
                 ORDER BY nome
             ";
 
             using var connection = _connectionFactory.CreateConnection();
-            return await connection.QueryAsync<Curso>(sql, new { Categoria = categoria.ToString() });
+            return await connection.QueryAsync<Curso>(sql, new { CategoriaString = categoria.ToString() });
         }
 
         // Método para filtrar por valor mínimo (conforme linha 99 do README)
@@ -137,8 +163,8 @@ namespace PortalEducaAPI.Infra
 
             if (categoria.HasValue)
             {
-                condicoes.Add("categoria = @Categoria::categoria_curso");
-                parametros.Add("Categoria", categoria.Value.ToString());
+                condicoes.Add("categoria = @CategoriaString::categoria_curso");
+                parametros.Add("CategoriaString", categoria.Value.ToString());
             }
 
             if (valorMinimo.HasValue)

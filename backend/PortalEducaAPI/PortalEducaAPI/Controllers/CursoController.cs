@@ -51,6 +51,7 @@ namespace PortalEducaAPI.Controllers
             {
                 try
                 {
+                    Console.WriteLine("CadastrarRequest: " + cadastrarRequest);
                     var cadastrarResponse = await _CursoService.Cadastrar(cadastrarRequest);
 
                     return Ok(cadastrarResponse);

@@ -12,9 +12,13 @@ namespace PortalEducaAPI.Infra.DatabaseConfiguration
             _connectionString = connectionString;
         }
 
+
+
         public IDbConnection CreateConnection()
         {
             return new NpgsqlConnection(_connectionString);
         }
     }
+
+
 }
