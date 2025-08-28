@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useNotificacao } from '@/components/notificacao-provider'
 
 interface FormularioAlunoProps {
   aluno?: Aluno | null
@@ -15,6 +16,7 @@ interface FormularioAlunoProps {
 }
 
 export function FormularioAluno({ aluno, onSubmit, onCancel, loading = false }: FormularioAlunoProps) {
+  const { notificarCriado, notificarEditado, notificarErroOperacao } = useNotificacao()
   const [formData, setFormData] = useState({
     nome: aluno?.nome || '',
     sobrenome: aluno?.sobrenome || '',
@@ -80,6 +82,13 @@ export function FormularioAluno({ aluno, onSubmit, onCancel, loading = false }: 
       const resultado = await onSubmit(dadosParaEnvio)
       
       if (resultado.success) {
+        // Notificar sucesso
+        if (aluno) {
+          notificarEditado('Aluno', `${formData.nome} ${formData.sobrenome}`)
+        } else {
+          notificarCriado('Aluno', `${formData.nome} ${formData.sobrenome}`)
+        }
+
         // Limpar formulário após sucesso
         setFormData({
           nome: '',
@@ -93,10 +102,12 @@ export function FormularioAluno({ aluno, onSubmit, onCancel, loading = false }: 
         setErrors({})
         onCancel() // Fecha o formulário
       } else {
+        notificarErroOperacao('salvar', 'aluno', resultado.error)
         setErrors({ submit: resultado.error || 'Erro ao salvar aluno' })
       }
     } catch (error) {
       console.error('Erro ao salvar aluno:', error)
+      notificarErroOperacao('salvar', 'aluno', 'Erro inesperado ao salvar aluno. Verifique se a API está rodando.')
       setErrors({ submit: 'Erro inesperado ao salvar aluno. Verifique se a API está rodando.' })
     } finally {
       setSubmitting(false)

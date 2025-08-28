@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { FiltroBusca } from '@/components/filtro-busca'
+import { ModalConfirmacao } from '@/components/ui/modal-confirmacao'
+import { useNotificacao } from '@/components/notificacao-provider'
 
 const getCategoriaLabel = (categoria: CategoriaCurso | undefined): string => {
   if (categoria === undefined || categoria === null) {
@@ -32,10 +34,19 @@ interface ListaCursosProps {
 
 export function ListaCursos({ onEditarCurso, onVincularCurso }: ListaCursosProps) {
   const { cursos, loading, error, carregarCursos, removerCurso } = useCursos()
+  const { notificarExcluido, notificarErroOperacao } = useNotificacao()
   const [termoBusca, setTermoBusca] = useState('')
   const [filtroAtivo, setFiltroAtivo] = useState<'todos' | 'ativo' | 'inativo'>('todos')
   const [filtroCategoria, setFiltroCategoria] = useState<string>('todas')
   const [filtroValorMin, setFiltroValorMin] = useState<string>('')
+  const [modalExclusao, setModalExclusao] = useState<{
+    aberto: boolean
+    curso: Curso | null
+  }>({
+    aberto: false,
+    curso: null
+  })
+  const [excluindo, setExcluindo] = useState(false)
 
   const cursosFiltrados = useMemo(() => {
     let resultado = cursos
@@ -104,13 +115,34 @@ export function ListaCursos({ onEditarCurso, onVincularCurso }: ListaCursosProps
     )
   }
 
-  const handleRemover = async (id: number, nome: string) => {
-    if (confirm(`Tem certeza que deseja remover o curso "${nome}"?`)) {
-      const resultado = await removerCurso(id)
-      if (!resultado.success) {
-        alert(`Erro: ${resultado.error}`)
+  const handleRemover = async (curso: Curso) => {
+    setModalExclusao({
+      aberto: true,
+      curso
+    })
+  }
+
+  const confirmarExclusao = async () => {
+    if (!modalExclusao.curso) return
+
+    setExcluindo(true)
+    try {
+      const resultado = await removerCurso(modalExclusao.curso.id)
+      if (resultado.success) {
+        notificarExcluido('Curso', modalExclusao.curso.nome)
+        setModalExclusao({ aberto: false, curso: null })
+      } else {
+        notificarErroOperacao('excluir', 'curso', resultado.error)
       }
+    } catch (error) {
+      notificarErroOperacao('excluir', 'curso', 'Erro inesperado ocorreu')
+    } finally {
+      setExcluindo(false)
     }
+  }
+
+  const cancelarExclusao = () => {
+    setModalExclusao({ aberto: false, curso: null })
   }
 
   const filtrosAdicionais = (
@@ -219,7 +251,7 @@ export function ListaCursos({ onEditarCurso, onVincularCurso }: ListaCursosProps
                         <Button 
                           variant="outline" 
                           size="sm"
-                          onClick={() => handleRemover(curso.id, curso.nome)}
+                          onClick={() => handleRemover(curso)}
                           className="text-red-600 hover:text-red-700 hover:bg-red-50"
                         >
                           🗑️
@@ -233,6 +265,19 @@ export function ListaCursos({ onEditarCurso, onVincularCurso }: ListaCursosProps
         )}
         </CardContent>
       </Card>
+
+      {/* Modal de Confirmação de Exclusão */}
+      <ModalConfirmacao
+        aberto={modalExclusao.aberto}
+        titulo="Confirmar Exclusão"
+        mensagem={`Tem certeza que deseja excluir o curso "${modalExclusao.curso?.nome}"? Esta ação não pode ser desfeita.`}
+        textoConfirmacao="Excluir Curso"
+        textoCancelamento="Cancelar"
+        tipo="perigo"
+        onConfirmar={confirmarExclusao}
+        onCancelar={cancelarExclusao}
+        carregando={excluindo}
+      />
     </div>
   )
 } 

@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { FiltroBusca } from '@/components/filtro-busca'
+import { ModalConfirmacao } from '@/components/ui/modal-confirmacao'
+import { useNotificacao } from '@/components/notificacao-provider'
 
 interface ListaAlunosProps {
   onEditarAluno?: (aluno: Aluno) => void
@@ -14,8 +16,17 @@ interface ListaAlunosProps {
 
 export function ListaAlunos({ onEditarAluno }: ListaAlunosProps) {
   const { alunos, loading, error, carregarAlunos, removerAluno } = useAlunos()
+  const { notificarExcluido, notificarErroOperacao } = useNotificacao()
   const [termoBusca, setTermoBusca] = useState('')
   const [filtroAtivo, setFiltroAtivo] = useState<'todos' | 'ativo' | 'inativo'>('todos')
+  const [modalExclusao, setModalExclusao] = useState<{
+    aberto: boolean
+    aluno: Aluno | null
+  }>({
+    aberto: false,
+    aluno: null
+  })
+  const [excluindo, setExcluindo] = useState(false)
 
   const alunosFiltrados = useMemo(() => {
     let resultado = alunos
@@ -72,13 +83,34 @@ export function ListaAlunos({ onEditarAluno }: ListaAlunosProps) {
     )
   }
 
-  const handleRemover = async (id: number, nome: string) => {
-    if (confirm(`Tem certeza que deseja remover o aluno ${nome}?`)) {
-      const resultado = await removerAluno(id)
-      if (!resultado.success) {
-        alert(`Erro: ${resultado.error}`)
+  const handleRemover = async (aluno: Aluno) => {
+    setModalExclusao({
+      aberto: true,
+      aluno
+    })
+  }
+
+  const confirmarExclusao = async () => {
+    if (!modalExclusao.aluno) return
+
+    setExcluindo(true)
+    try {
+      const resultado = await removerAluno(modalExclusao.aluno.id)
+      if (resultado.success) {
+        notificarExcluido('Aluno', modalExclusao.aluno.nome)
+        setModalExclusao({ aberto: false, aluno: null })
+      } else {
+        notificarErroOperacao('excluir', 'aluno', resultado.error)
       }
+    } catch (error) {
+      notificarErroOperacao('excluir', 'aluno', 'Erro inesperado ocorreu')
+    } finally {
+      setExcluindo(false)
     }
+  }
+
+  const cancelarExclusao = () => {
+    setModalExclusao({ aberto: false, aluno: null })
   }
 
   const formatarData = (data: string | undefined) => {
@@ -165,7 +197,7 @@ export function ListaAlunos({ onEditarAluno }: ListaAlunosProps) {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={() => handleRemover(aluno.id, aluno.nome)}
+                    onClick={() => handleRemover(aluno)}
                     className="text-red-600 hover:text-red-700 hover:bg-red-50"
                   >
                     🗑️ Remover
@@ -177,6 +209,19 @@ export function ListaAlunos({ onEditarAluno }: ListaAlunosProps) {
         )}
         </CardContent>
       </Card>
+
+      {/* Modal de Confirmação de Exclusão */}
+      <ModalConfirmacao
+        aberto={modalExclusao.aberto}
+        titulo="Confirmar Exclusão"
+        mensagem={`Tem certeza que deseja excluir o aluno "${modalExclusao.aluno?.nome} ${modalExclusao.aluno?.sobrenome}"? Esta ação não pode ser desfeita.`}
+        textoConfirmacao="Excluir Aluno"
+        textoCancelamento="Cancelar"
+        tipo="perigo"
+        onConfirmar={confirmarExclusao}
+        onCancelar={cancelarExclusao}
+        carregando={excluindo}
+      />
     </div>
   )
 } 

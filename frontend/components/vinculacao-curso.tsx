@@ -5,6 +5,7 @@ import { apiClient, Curso, Professor, Aluno } from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { useNotificacao } from '@/components/notificacao-provider'
 
 interface VinculacaoCursoProps {
   curso: Curso
@@ -12,6 +13,7 @@ interface VinculacaoCursoProps {
 }
 
 export function VinculacaoCurso({ curso, onClose }: VinculacaoCursoProps) {
+  const { notificarSucesso, notificarErroOperacao } = useNotificacao()
   const [professores, setProfessores] = useState<Professor[]>([])
   const [alunos, setAlunos] = useState<Aluno[]>([])
   const [loading, setLoading] = useState(false)
@@ -46,10 +48,17 @@ export function VinculacaoCurso({ curso, onClose }: VinculacaoCursoProps) {
         ...curso, 
         professorId: professorId 
       })
-      alert(professorId ? 'Professor vinculado com sucesso!' : 'Professor desvinculado com sucesso!')
+      
+      if (professorId) {
+        notificarSucesso('Professor vinculado', 'Professor vinculado ao curso com sucesso!')
+      } else {
+        notificarSucesso('Professor desvinculado', 'Professor desvinculado do curso com sucesso!')
+      }
+      
       onClose()
     } catch (err) {
-      alert(professorId ? 'Erro ao vincular professor' : 'Erro ao desvincular professor')
+      const operacao = professorId ? 'vincular' : 'desvincular'
+      notificarErroOperacao(operacao, 'professor', 'Erro ao vincular professor ao curso')
       console.error(err)
     }
   }

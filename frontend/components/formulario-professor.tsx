@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useNotificacao } from '@/components/notificacao-provider'
 
 interface FormularioProfessorProps {
   professor?: Professor | null
@@ -24,6 +25,7 @@ const formacoesDisponiveis = [
 ]
 
 export function FormularioProfessor({ professor, onSubmit, onCancel, loading = false }: FormularioProfessorProps) {
+  const { notificarCriado, notificarEditado, notificarErroOperacao } = useNotificacao()
   const [formData, setFormData] = useState({
     nome: professor?.nome || '',
     sobrenome: professor?.sobrenome || '',
@@ -86,12 +88,32 @@ export function FormularioProfessor({ professor, onSubmit, onCancel, loading = f
       const resultado = await onSubmit(dadosParaEnvio)
       
       if (resultado.success) {
+        // Notificar sucesso
+        if (professor) {
+          notificarEditado('Professor', `${formData.nome} ${formData.sobrenome}`)
+        } else {
+          notificarCriado('Professor', `${formData.nome} ${formData.sobrenome}`)
+        }
+
+        // Limpar formulário após sucesso
+        setFormData({
+          nome: '',
+          sobrenome: '',
+          email: '',
+          telefone: '',
+          formacao: FormacaoProfessor.Graduado,
+          ativo: true
+        })
+        setErrors({})
         onCancel() // Fecha o formulário
       } else {
+        notificarErroOperacao('salvar', 'professor', resultado.error)
         setErrors({ submit: resultado.error || 'Erro ao salvar professor' })
       }
     } catch (error) {
-      setErrors({ submit: 'Erro inesperado ao salvar professor' })
+      console.error('Erro ao salvar professor:', error)
+      notificarErroOperacao('salvar', 'professor', 'Erro inesperado ao salvar professor. Verifique se a API está rodando.')
+      setErrors({ submit: 'Erro inesperado ao salvar professor. Verifique se a API está rodando.' })
     } finally {
       setSubmitting(false)
     }

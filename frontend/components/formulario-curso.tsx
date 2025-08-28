@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useNotificacao } from '@/components/notificacao-provider'
 
 interface FormularioCursoProps {
   curso?: Curso | null
@@ -22,6 +23,7 @@ const categoriasDisponiveis = [
 ]
 
 export function FormularioCurso({ curso, onSubmit, onCancel, loading = false }: FormularioCursoProps) {
+  const { notificarCriado, notificarEditado, notificarErroOperacao } = useNotificacao()
   const [formData, setFormData] = useState({
     nome: curso?.nome || '',
     descricao: curso?.descricao || '',
@@ -99,12 +101,32 @@ export function FormularioCurso({ curso, onSubmit, onCancel, loading = false }: 
       const resultado = await onSubmit(dadosParaEnvio)
       
       if (resultado.success) {
+        // Notificar sucesso
+        if (curso) {
+          notificarEditado('Curso', formData.nome)
+        } else {
+          notificarCriado('Curso', formData.nome)
+        }
+
+        // Limpar formulário após sucesso
+        setFormData({
+          nome: '',
+          descricao: '',
+          valor: 0,
+          cargaHoraria: 0,
+          categoria: CategoriaCurso.Basico,
+          ativo: true
+        })
+        setErrors({})
         onCancel() // Fecha o formulário
       } else {
+        notificarErroOperacao('salvar', 'curso', resultado.error)
         setErrors({ submit: resultado.error || 'Erro ao salvar curso' })
       }
     } catch (error) {
-      setErrors({ submit: 'Erro inesperado ao salvar curso' })
+      console.error('Erro ao salvar curso:', error)
+      notificarErroOperacao('salvar', 'curso', 'Erro inesperado ao salvar curso. Verifique se a API está rodando.')
+      setErrors({ submit: 'Erro inesperado ao salvar curso. Verifique se a API está rodando.' })
     } finally {
       setSubmitting(false)
     }
