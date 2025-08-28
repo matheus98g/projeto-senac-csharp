@@ -130,12 +130,20 @@ export function ListaCursos({ onEditarCurso, onVincularCurso }: ListaCursosProps
       const resultado = await removerCurso(modalExclusao.curso.id)
       if (resultado.success) {
         notificarExcluido('Curso', modalExclusao.curso.nome)
+        // Fechar o modal e limpar o estado
         setModalExclusao({ aberto: false, curso: null })
+        // Recarregar a lista para garantir sincronização
+        await carregarCursos()
       } else {
         notificarErroOperacao('excluir', 'curso', resultado.error)
+        // Mesmo com erro, fechar o modal para não travar a interface
+        setModalExclusao({ aberto: false, curso: null })
       }
     } catch (error) {
+      console.error('Erro inesperado ao excluir curso:', error)
       notificarErroOperacao('excluir', 'curso', 'Erro inesperado ocorreu')
+      // Mesmo com erro, fechar o modal para não travar a interface
+      setModalExclusao({ aberto: false, curso: null })
     } finally {
       setExcluindo(false)
     }

@@ -72,7 +72,7 @@ namespace PortalEducaAPI.Controllers
                 {
                     await _AlunoService.DeletarPorId(id);
 
-                    return Ok();
+                    return Ok(new { mensagem = "Aluno excluído com sucesso" });
                 }
                 catch (Exception ex)
                 {
@@ -90,7 +90,7 @@ namespace PortalEducaAPI.Controllers
                 try
                 {
                     await _AlunoService.AtualizarPorId(id, adicionarRequest);
-                    return Ok();
+                    return Ok(new { mensagem = "Aluno atualizado com sucesso" });
                 }
                 catch (Exception ex)
                 {

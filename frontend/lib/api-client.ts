@@ -63,30 +63,35 @@ class ApiClient {
     this.baseURL = API_BASE_URL
   }
 
-  private async request<T>(
-    endpoint: string, 
-    options: RequestInit = {}
-  ): Promise<T> {
+  private async request<T>(endpoint: string, config: RequestInit = {}): Promise<T> {
     const url = `${this.baseURL}${endpoint}`
     
-    const config: RequestInit = {
+    const defaultConfig: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        ...options.headers,
+        ...config.headers,
       },
-      ...options,
     }
+
+    const finalConfig = { ...defaultConfig, ...config }
 
     try {
       console.log(`🔄 Fazendo requisição para: ${url}`)
       
-      const response = await fetch(url, config)
+      const response = await fetch(url, finalConfig)
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => null)
         const errorMessage = errorData?.mensagem || `Erro ${response.status}: ${response.statusText}`
         throw new Error(errorMessage)
+      }
+
+      // Para operações DELETE, não tentar fazer JSON se não houver conteúdo
+      if (config.method === 'DELETE') {
+        const contentLength = response.headers.get('content-length')
+        if (contentLength === '0' || response.status === 204) {
+          return {} as T
+        }
       }
 
       const data = await response.json()

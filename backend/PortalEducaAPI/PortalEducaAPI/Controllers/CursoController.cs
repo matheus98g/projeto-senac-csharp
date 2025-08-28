@@ -74,7 +74,7 @@ namespace PortalEducaAPI.Controllers
                 {
                     await _CursoService.DeletarPorId(id);
 
-                    return Ok();
+                    return Ok(new { mensagem = "Curso excluído com sucesso" });
                 }
                 catch (Exception ex)
                 {
@@ -92,7 +92,7 @@ namespace PortalEducaAPI.Controllers
                 try
                 {
                     await _CursoService.AtualizarPorId(id, adicionarRequest);
-                    return Ok();
+                    return Ok(new { mensagem = "Curso atualizado com sucesso" });
                 }
                 catch (Exception ex)
                 {
@@ -100,6 +100,7 @@ namespace PortalEducaAPI.Controllers
                     {
                         Mensagem = ex.Message
                     };
+
                     return BadRequest(erroResponse);
                 }
             }

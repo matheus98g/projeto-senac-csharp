@@ -52,9 +52,11 @@ export function useCursos() {
   const removerCurso = async (id: number) => {
     try {
       await apiClient.deletarCurso(id)
-      await carregarCursos()
+      // Atualizar a lista local removendo o curso excluído
+      setCursos(prevCursos => prevCursos.filter(curso => curso.id !== id))
       return { success: true }
     } catch (err) {
+      console.error('Erro ao remover curso:', err)
       return { 
         success: false, 
         error: err instanceof Error ? err.message : 'Erro ao remover curso' 
