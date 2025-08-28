@@ -3,6 +3,7 @@ using PortalEducaAPI.Domain.Models;
 using PortalEducaAPI.Domain.Repository;
 using PortalEducaAPI.Infra.DatabaseConfiguration;
 
+
 namespace PortalEducaAPI.Infra
 {
     public class AlunoCursoRepository : IAlunoCursoRepository
@@ -16,20 +17,50 @@ namespace PortalEducaAPI.Infra
 
         public async Task<long> VincularAlunoACurso(long alunoId, long cursoId)
         {
-            // Verificar se ambos estão ativos (conforme linha 136 do README)
-            var validacaoSql = @"
-                SELECT 
-                    (SELECT ativo FROM public.aluno WHERE id = @AlunoId) as AlunoAtivo,
-                    (SELECT ativo FROM public.curso WHERE id = @CursoId) as CursoAtivo
-            ";
+            Console.WriteLine($"Validando aluno {alunoId} e curso {cursoId}");
+            
+
 
             using var connection = _connectionFactory.CreateConnection();
             
-            var validacao = await connection.QueryFirstOrDefaultAsync<dynamic>(validacaoSql, new { AlunoId = alunoId, CursoId = cursoId });
+            // Primeiro, vamos verificar se o aluno existe e está ativo
+            var alunoSql = "SELECT id, nome, ativo FROM public.aluno WHERE id = @AlunoId";
+            var aluno = await connection.QueryFirstOrDefaultAsync<dynamic>(alunoSql, new { AlunoId = alunoId });
             
-            if (validacao?.AlunoAtivo != true || validacao?.CursoAtivo != true)
+            if (aluno == null)
             {
-                throw new InvalidOperationException("Apenas alunos e cursos ativos podem ser vinculados.");
+                var mensagem = $"Aluno {alunoId} não encontrado";
+                Console.WriteLine(mensagem);
+                throw new InvalidOperationException(mensagem);
+            }
+            
+            Console.WriteLine($"Aluno encontrado: {aluno.nome} (ID: {aluno.id}) ativo: {aluno.ativo} (tipo: {aluno.ativo?.GetType()})");
+            
+            // Verificar se o curso existe e está ativo
+            var cursoSql = "SELECT id, nome, ativo FROM public.curso WHERE id = @CursoId";
+            var curso = await connection.QueryFirstOrDefaultAsync<dynamic>(cursoSql, new { CursoId = cursoId });
+            
+            if (curso == null)
+            {
+                var mensagem = $"Curso {cursoId} não encontrado";
+                Console.WriteLine(mensagem);
+                throw new InvalidOperationException(mensagem);
+            }
+            
+            Console.WriteLine($"Curso encontrado: {curso.nome} (ID: {curso.id}) ativo: {curso.ativo} (tipo: {curso.ativo?.GetType()})");
+            
+            // Verificar se ambos estão ativos
+            var alunoAtivo = Convert.ToBoolean(aluno.ativo);
+            var cursoAtivo = Convert.ToBoolean(curso.ativo);
+            
+            Console.WriteLine($"Aluno ativo convertido: {alunoAtivo}");
+            Console.WriteLine($"Curso ativo convertido: {cursoAtivo}");
+            
+            if (!alunoAtivo || !cursoAtivo)
+            {
+                var mensagem = $"Apenas alunos e cursos ativos podem ser vinculados. Aluno {aluno.nome} (ID: {aluno.id}) ativo: {aluno.ativo}, Curso {curso.nome} (ID: {curso.id}) ativo: {curso.ativo}";
+                Console.WriteLine(mensagem);
+                throw new InvalidOperationException(mensagem);
             }
 
             var sql = @"
@@ -129,5 +160,7 @@ namespace PortalEducaAPI.Infra
             using var connection = _connectionFactory.CreateConnection();
             return await connection.QueryAsync<Aluno>(sql, new { CursoId = cursoId });
         }
+
+
     }
 }

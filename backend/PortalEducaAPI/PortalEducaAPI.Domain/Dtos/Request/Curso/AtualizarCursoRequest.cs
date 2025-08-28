@@ -11,6 +11,9 @@ namespace PortalEducaAPI.Domain.Dtos.Request.Curso
 {
     public class AtualizarCursoRequest
     {
+        [JsonProperty("nome")]
+        public string? Nome { get; set; }
+
         [Required]
         [JsonProperty("descricao")]
         public string Descricao { get; set; }

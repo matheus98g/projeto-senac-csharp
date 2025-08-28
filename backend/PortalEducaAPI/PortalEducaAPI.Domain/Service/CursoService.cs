@@ -51,6 +51,12 @@ namespace PortalEducaAPI.Domain.Service
                 throw new Exception($"Não foi possível encontrar o curso com ID {id}.");
             }
 
+            // Atualizar nome apenas se fornecido
+            if (!string.IsNullOrEmpty(atualizarCursoRequest.Nome))
+            {
+                curso.Nome = atualizarCursoRequest.Nome;
+            }
+
             curso.Valor = atualizarCursoRequest.Valor;
             curso.CargaHoraria = atualizarCursoRequest.CargaHoraria;
             curso.Ativo = atualizarCursoRequest.Ativo;

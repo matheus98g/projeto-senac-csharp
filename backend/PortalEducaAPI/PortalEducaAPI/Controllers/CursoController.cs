@@ -92,7 +92,7 @@ namespace PortalEducaAPI.Controllers
                 try
                 {
                     await _CursoService.AtualizarPorId(id, adicionarRequest);
-                    return Ok(new { mensagem = "Curso atualizado com sucesso" });
+                    return Ok(new { mensagem = "Curso atualizado com sucesso", sucesso = true });
                 }
                 catch (Exception ex)
                 {

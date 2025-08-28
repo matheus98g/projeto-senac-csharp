@@ -86,15 +86,24 @@ class ApiClient {
         throw new Error(errorMessage)
       }
 
-      // Para operações DELETE, não tentar fazer JSON se não houver conteúdo
-      if (config.method === 'DELETE') {
+      // Para operações DELETE e PUT, verificar se há conteúdo antes de tentar fazer JSON
+      if (config.method === 'DELETE' || config.method === 'PUT') {
         const contentLength = response.headers.get('content-length')
-        if (contentLength === '0' || response.status === 204) {
+        const contentType = response.headers.get('content-type')
+        
+        // Se não há conteúdo ou é uma resposta vazia, retornar objeto vazio
+        if (contentLength === '0' || response.status === 204 || !contentType?.includes('application/json')) {
           return {} as T
         }
       }
 
-      const data = await response.json()
+      // Tentar fazer parse do JSON apenas se houver conteúdo
+      const text = await response.text()
+      if (!text.trim()) {
+        return {} as T
+      }
+
+      const data = JSON.parse(text)
       console.log(`✅ Resposta recebida:`, data)
       return data
     } catch (error) {
@@ -289,6 +298,57 @@ class ApiClient {
       method: 'DELETE'
     })
   }
+
+  // ========== VINCULAÇÕES ALUNO-CURSO ==========
+  async vincularAlunoACurso(alunoId: number, cursoId: number): Promise<any> {
+    return this.request('/aluno-curso/vincular', {
+      method: 'POST',
+      body: JSON.stringify({ alunoId, cursoId })
+    })
+  }
+
+  async desvincularAlunoDoCurso(alunoId: number, cursoId: number): Promise<void> {
+    return this.request('/aluno-curso/desvincular', {
+      method: 'DELETE',
+      body: JSON.stringify({ alunoId, cursoId })
+    })
+  }
+
+  async obterAlunosDoCurso(cursoId: number): Promise<Aluno[]> {
+    const dados = await this.request<any[]>(`/aluno-curso/curso/${cursoId}/alunos`)
+    return dados.map(aluno => ({
+      id: aluno.id,
+      nome: aluno.nome || aluno.Nome || '',
+      sobrenome: aluno.sobrenome || aluno.Sobrenome || '',
+      telefone: aluno.telefone || aluno.Telefone || '',
+      email: aluno.email || aluno.Email || '',
+      dataDeNascimento: aluno.dataDeNascimento || aluno.DataDeNascimento,
+      dataMatricula: aluno.dataMatricula || aluno.DataMatricula,
+      ativo: (aluno.ativo || aluno.Ativo) ?? true
+    }))
+  }
+
+  async obterCursosDoAluno(alunoId: number): Promise<Curso[]> {
+    const dados = await this.request<any[]>(`/aluno-curso/aluno/${alunoId}/cursos`)
+    return dados.map(curso => ({
+      id: curso.id,
+      nome: curso.nome || curso.Nome || '',
+      descricao: curso.descricao || curso.Descricao || '',
+      valor: curso.valor || curso.Valor || 0,
+      dataCriacao: curso.dataCriacao || curso.DataCriacao,
+      professorId: curso.professorId || curso.ProfessorId,
+      cargaHoraria: curso.cargaHoraria || curso.CargaHoraria || 0,
+      categoria: curso.categoria || curso.Categoria || 1,
+      ativo: (curso.ativo || curso.Ativo) ?? true
+    }))
+  }
+
+  async verificarVinculoAlunoCurso(alunoId: number, cursoId: number): Promise<boolean> {
+    const dados = await this.request<{ vinculado: boolean }>(`/aluno-curso/verificar/${alunoId}/${cursoId}`)
+    return dados.vinculado
+  }
+
+
 }
 
 // Exportar instância única
