@@ -99,11 +99,18 @@ export function ListaAlunos({ onEditarAluno }: ListaAlunosProps) {
       if (resultado.success) {
         notificarExcluido('Aluno', modalExclusao.aluno.nome)
         setModalExclusao({ aberto: false, aluno: null })
+        // Recarregar a lista para garantir sincronização
+        await carregarAlunos()
       } else {
         notificarErroOperacao('excluir', 'aluno', resultado.error)
+        // Mesmo com erro, fechar o modal para não travar a interface
+        setModalExclusao({ aberto: false, aluno: null })
       }
     } catch (error) {
+      console.error('Erro inesperado ao excluir aluno:', error)
       notificarErroOperacao('excluir', 'aluno', 'Erro inesperado ocorreu')
+      // Mesmo com erro, fechar o modal para não travar a interface
+      setModalExclusao({ aberto: false, aluno: null })
     } finally {
       setExcluindo(false)
     }
@@ -162,51 +169,52 @@ export function ListaAlunos({ onEditarAluno }: ListaAlunosProps) {
               }
             </p>
           ) : (
-            <div className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {alunosFiltrados.map((aluno) => (
-              <div 
-                key={aluno.id} 
-                className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
-              >
-                <div className="space-y-1 flex-1">
-                  <h3 className="font-medium text-lg">
-                    {aluno.nome} {aluno.sobrenome}
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm text-muted-foreground">
-                    <p>📧 {aluno.email}</p>
-                    <p>📱 {aluno.telefone}</p>
-                    <p>🎂 Nascimento: {formatarData(aluno.dataDeNascimento)}</p>
-                    <p>📚 Matrícula: {formatarData(aluno.dataMatricula)}</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-2 ml-4">
-                  <Badge variant={aluno.ativo ? 'default' : 'secondary'}>
-                    {aluno.ativo ? 'Ativo' : 'Inativo'}
-                  </Badge>
-                  {onEditarAluno && (
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => onEditarAluno(aluno)}
-                      className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                    >
-                      ✏️ Editar
-                    </Button>
-                  )}
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleRemover(aluno)}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                  >
-                    🗑️ Remover
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+                <Card key={aluno.id} className="hover:shadow-md transition-shadow">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg">
+                      {aluno.nome} {aluno.sobrenome}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="space-y-1 text-sm text-muted-foreground">
+                      <p>📧 {aluno.email}</p>
+                      <p>📱 {aluno.telefone || 'Não informado'}</p>
+                      <p>🎂 Nascimento: {formatarData(aluno.dataDeNascimento)}</p>
+                      <p>📚 Matrícula: {formatarData(aluno.dataMatricula)}</p>
+                    </div>
+                    
+                    <div className="flex justify-between items-center pt-2">
+                      <Badge variant={aluno.ativo ? 'default' : 'secondary'}>
+                        {aluno.ativo ? 'Ativo' : 'Inativo'}
+                      </Badge>
+                      <div className="flex gap-1 flex-wrap">
+                        {onEditarAluno && (
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => onEditarAluno(aluno)}
+                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                          >
+                            ✏️
+                          </Button>
+                        )}
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleRemover(aluno)}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          🗑️
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 

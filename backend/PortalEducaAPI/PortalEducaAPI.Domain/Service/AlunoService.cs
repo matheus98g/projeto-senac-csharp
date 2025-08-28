@@ -68,7 +68,13 @@ namespace PortalEducaAPI.Domain.Service
             return alunos.Select(x => new ObterTodosResponse
             {
                 Id = x.Id,
-                Nome = $"{x.Nome} {x.Sobrenome}"
+                Nome = x.Nome,
+                Sobrenome = x.Sobrenome,
+                Email = x.Email,
+                Telefone = x.Telefone,
+                DataDeNascimento = x.DataDeNascimento,
+                DataMatricula = x.DataMatricula,
+                Ativo = x.Ativo
             });
         }
 

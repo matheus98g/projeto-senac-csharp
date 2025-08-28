@@ -14,5 +14,23 @@ namespace PortalEducaAPI.Domain.Dtos.Response.Aluno
         
         [JsonProperty("nome")]
         public string Nome { get; set; }
+        
+        [JsonProperty("sobrenome")]
+        public string Sobrenome { get; set; }
+        
+        [JsonProperty("email")]
+        public string Email { get; set; }
+        
+        [JsonProperty("telefone")]
+        public string Telefone { get; set; }
+        
+        [JsonProperty("dataDeNascimento")]
+        public DateTime DataDeNascimento { get; set; }
+        
+        [JsonProperty("dataMatricula")]
+        public DateTime DataMatricula { get; set; }
+        
+        [JsonProperty("ativo")]
+        public bool Ativo { get; set; }
     }
 }
